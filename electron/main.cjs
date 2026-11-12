@@ -67,12 +67,26 @@ function accepted(command) {
   if (!command || typeof command !== 'object') return false
   switch (command.action) {
     case 'start': return typeof command.device === 'string' && command.device.length <= 256
-    case 'stop': case 'next': case 'previous': case 'still': case 'record': case 'pause': return true
+    case 'stop': case 'next': case 'previous': case 'still': case 'record': case 'pause': case 'mic': case 'save-effects': return true
     case 'effect': case 'background': return Number.isInteger(command.value) && command.value >= 0 && command.value <= 20
-    case 'scope': return Number.isInteger(command.value) && command.value >= 0 && command.value <= 3
+    case 'scope': case 'detection': return Number.isInteger(command.value) && command.value >= 0 && command.value <= 3
+    case 'cooldown': return Number.isInteger(command.value) && command.value >= 250 && command.value <= 1500
     case 'profile': return [0, 1, 2].includes(command.level) && typeof command.locked === 'boolean'
-    case 'strength': case 'amount': case 'sensitivity': return Number.isFinite(command.value) && command.value >= 0 && command.value <= 1
-    case 'mirror': case 'cover': case 'tracking': case 'transition': return typeof command.value === 'boolean'
+    case 'strength': case 'amount': case 'sensitivity': case 'mic-sensitivity':
+      return Number.isFinite(command.value) && command.value >= 0 && command.value <= 1
+    case 'mirror': case 'cover': case 'tracking': return typeof command.value === 'boolean'
+    case 'rotation': {
+      const value = command.value
+      return value && Array.isArray(value.ids) && value.ids.length > 0 && value.ids.length <= 21 &&
+        value.ids.every(id => Number.isInteger(id) && id >= 0 && id <= 20) && typeof value.shuffle === 'boolean'
+    }
+    case 'transition': {
+      const value = command.value
+      return value && Number.isInteger(value.style) && value.style >= -2 && value.style <= 10 &&
+        Number.isInteger(value.duration) && value.duration >= 120 && value.duration <= 650 &&
+        Number.isFinite(value.strength) && value.strength >= 0 && value.strength <= 1 &&
+        typeof value.reducedFlash === 'boolean' && typeof value.eased === 'boolean'
+    }
     default: return false
   }
 }
@@ -92,11 +106,12 @@ app.whenReady().then(() => {
   })
   const localOutput = (contents, url) => !!output && !output.isDestroyed() &&
     contents === output.webContents && (url === origin || url === origin + '/' || url === origin + '/index.html')
+  const isInput = type => type === 'audio' || type === 'video'
   session.defaultSession.setPermissionCheckHandler((contents, permission, requestingOrigin, details) =>
-    localOutput(contents, requestingOrigin) && permission === 'media' && details.mediaType === 'video')
+    localOutput(contents, requestingOrigin) && permission === 'media' && isInput(details.mediaType))
   session.defaultSession.setPermissionRequestHandler((contents, permission, callback, details) => {
     callback(localOutput(contents, details.requestingUrl) && permission === 'media' &&
-      details.isMainFrame && details.mediaTypes?.length === 1 && details.mediaTypes[0] === 'video')
+      details.isMainFrame && details.mediaTypes?.length === 1 && isInput(details.mediaTypes[0]))
   })
   ipcMain.on('snap:publish', (event, payload) => {
     if (!from(event, output)) return

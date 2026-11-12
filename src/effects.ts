@@ -50,6 +50,8 @@ uniform float time;
 uniform float strength;
 uniform float amount;
 uniform float impact;
+uniform float transitionStrength;
+uniform int transitionStyle;
 uniform int detailLevel;
 float sourceLuma(vec3 c) { return dot(c, vec3(.2126, .7152, .0722)); }
 float noise(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
@@ -245,6 +247,55 @@ vec3 applyEffect(int mode, vec2 p, vec3 c, float param) {
   }
   return c;
 }
+vec3 transitionAt(vec2 p, vec3 c) {
+  if (impact <= 0. || transitionStyle == 0) return c;
+  vec2 q = (p - .5) * vec2(1.7778,1.);
+  float radius = length(q);
+  float angle = screenAngle(q);
+  float travel = 1. - impact;
+  float ring = 1. - smoothstep(.012,.055,abs(radius - .82 * travel));
+  float fade = impact * transitionStrength;
+  if (transitionStyle == 1) return c + vec3(.8,.46,.11) * ring * fade;
+  if (transitionStyle == 2) {
+    float rays = abs(fract(angle * 2.8) - .5);
+    float star = 1. - smoothstep(.25,.28,radius - rays * .23);
+    float text = titleAt(p,.75 + impact * .23,.52,-.11);
+    return mix(c,mix(vec3(.82,.27,.04),vec3(1.,.94,.65),text),max(star * .57,text) * fade);
+  }
+  if (transitionStyle == 3) {
+    float edge = p.y + p.x * .4 + .13 * noise(floor(p * vec2(63.,28.)));
+    return mix(c,vec3(.016,.013,.026),smoothstep(travel,travel+.12,edge) * fade);
+  }
+  if (transitionStyle == 4) {
+    vec3 tint = mix(vec3(.97,.04,.51),vec3(.1,.95,.53),sin(angle * 5. + time * 9.) * .5 + .5);
+    return c + tint * (ring + .35 * (1. - smoothstep(.01,.045,abs(radius - .65 * travel)))) * fade;
+  }
+  if (transitionStyle == 5) {
+    float jitter = (noise(vec2(floor(p.y * 32.),floor(time * 18.))) - .5) * .19 * impact;
+    vec3 torn = vec3(sampleSource(p + vec2(jitter,0.)).r,c.g,sampleSource(p - vec2(jitter,0.)).b);
+    return mix(c,torn,fade);
+  }
+  if (transitionStyle == 6) return mix(c,sampleSource(p - (p - .5) * impact * .34) + vec3(.09,.12,.16),fade);
+  if (transitionStyle == 7) {
+    vec2 cell = fract(rotatePoint(q,.4) * (11. + travel * 4.));
+    float seam = 1. - smoothstep(.018,.065,abs(cell.x + cell.y - 1.));
+    return mix(c,vec3(.52,.88,1.),seam * fade);
+  }
+  if (transitionStyle == 8) {
+    vec2 slash = rotatePoint(q,-.8);
+    float ink = step(.76,fract(slash.x * 34. + floor(slash.y * 19.) * .13 + travel * 1.5));
+    return mix(c,vec3(.03,.025,.055),ink * fade);
+  }
+  if (transitionStyle == 9) {
+    float dots = halftoneAt(p,sourceLuma(c),5. + travel * 5.);
+    float burst = 1. - smoothstep(.12 + travel,.24 + travel,radius);
+    return mix(c,mix(vec3(.14,.035,.23),vec3(.99,.77,.38),dots),burst * fade);
+  }
+  float depth = max(.03,.55 - p.y);
+  vec2 grid = abs(fract(vec2(q.x * 4. / depth,1. / depth + travel * 4.)) - .5);
+  float lines = smoothstep(.43,.49,max(grid.x,grid.y)) * step(p.y,.54);
+  return c + vec3(.69,.14,.92) * lines * fade;
+}
 void main() {
   vec2 p = point;
   vec3 c = sampleSource(p);
@@ -256,8 +307,6 @@ void main() {
     else styled = mix(texture2D(splitBackdrop,p).rgb,styled,person);
   }
   c = mix(c, styled, strength);
-  float ring = 1. - smoothstep(.012,.045,abs(length((p - .5) * vec2(1.78,1.)) - .8 * (1. - impact)));
-  c += vec3(.18,.34,.32) * ring * impact;
-  gl_FragColor = vec4(clamp(c, 0., 1.), 1.);
+  gl_FragColor = vec4(clamp(transitionAt(p,c), 0., 1.), 1.);
 }
 `

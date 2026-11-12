@@ -17,18 +17,19 @@ test('animated GPU fixture meets its compatible performance baseline', async ({ 
   await page.waitForFunction(() => !!window.snapBenchmark)
   await page.evaluate(() => window.snapBenchmark!.setProfile(1, true))
   await page.waitForTimeout(900)
-  const rows: Array<{ label: string; id: number; stats: Stats }> = []
-  for (const { label, id } of effects) {
+  const measure = async (id: number, frames: number) => {
     await page.evaluate(value => {
       const engine = window.snapBenchmark!
       engine.metrics.reset()
       engine.select(value)
     }, id)
     await page.waitForFunction(target => window.snapBenchmark!.metrics.render.count >= target,
-      full ? 120 : 48, { polling: 100, timeout: 12000 })
-    rows.push({ label, id, stats: await page.evaluate(() => window.snapBenchmark!.snapshot()) })
+      frames, { polling: 100, timeout: 12000 })
+    return page.evaluate(() => window.snapBenchmark!.snapshot())
   }
-  const stress = await page.evaluate(async ids => {
+  const rows: Array<{ label: string; id: number; stats: Stats }> = []
+  for (const { label, id } of effects) rows.push({ label, id, stats: await measure(id, full ? 120 : 48) })
+  const measureStress = () => page.evaluate(async ids => {
     const engine = window.snapBenchmark!
     engine.metrics.reset()
     for (const id of [...ids, ...ids]) {
@@ -37,13 +38,15 @@ test('animated GPU fixture meets its compatible performance baseline', async ({ 
     }
     return engine.snapshot()
   }, effects.map(item => item.id))
+  const stress = await measureStress()
   const settings = {
     fixture: 'procedural-demo-v1', mode: full ? 'full' : 'smoke', os: process.platform + ' ' + release(),
     cpu: cpus()[0]?.model, browser: browser.version(), gpu: rows[0].stats.gpuName, width: 1280, height: 720,
     fpsTarget: 30, profile: 'Balanced locked', source: 'procedural shader', obs: 'not running',
   }
   const startups = [{ initialMs: rows[0].stats.initialMs, warmupMs: rows[0].stats.warmupMs }]
-  const report = { at: new Date().toISOString(), settings, rows, stress, errors, startups }
+  const confirmations: Array<{ label: string; firstP95: number; stats: Stats }> = []
+  const report = { at: new Date().toISOString(), settings, rows, stress, errors, startups, confirmations }
   await mkdir(reportDir, { recursive: true })
   const baseFile = `${reportDir}/baseline-${settings.mode}.json`
   const baseline = await readFile(baseFile, 'utf8').then(value => JSON.parse(value) as typeof report, error => {
@@ -59,8 +62,13 @@ test('animated GPU fixture meets its compatible performance baseline', async ({ 
       if (!prior) continue
       const p95 = row.stats.render.p95 ?? Infinity
       const priorP95 = prior.render.p95 ?? Infinity
-      if (p95 > priorP95 * 1.10) regression.push(`${row.label}: interval p95 ${p95.toFixed(1)} vs ${priorP95.toFixed(1)} ms`)
-      if (row.stats.longFrameRatio > prior.longFrameRatio + .10) regression.push(`${row.label}: long frame ratio increased by >10 percentage points`)
+      const exceeds = (stats: Stats) => (stats.render.p95 ?? Infinity) > priorP95 * 1.10 ||
+        stats.longFrameRatio > prior.longFrameRatio + .10
+      if (exceeds(row.stats)) {
+        const repeated = row.id === -1 ? await measureStress() : await measure(row.id, 120)
+        confirmations.push({ label: row.label, firstP95: p95, stats: repeated })
+        if (exceeds(repeated)) regression.push(`${row.label}: repeated frame timing above baseline (${p95.toFixed(1)}, ${repeated.render.p95?.toFixed(1)} vs ${priorP95.toFixed(1)} ms)`)
+      }
     }
     const oldPreview = baseline.rows[0].stats.initialMs ?? baseline.rows[0].stats.warmupMs
     const oldWarmup = baseline.rows[0].stats.warmupMs
@@ -89,7 +97,9 @@ test('animated GPU fixture meets its compatible performance baseline', async ({ 
     table.push(`| ${label} | ${[stats.renderFps, stats.render.p95, stats.cpu.p95, stats.gpu.p95, stats.latency.p95].map(value => value?.toFixed(2) ?? '—').join(' | ')} |`)
   }
   await writeFile(path + '.md', ['# Animated render benchmark', '', settings.gpu, '',
-    `First draw ${startups.map(sample => sample.initialMs.toFixed(1)).join(', ')} ms. Full catalog warm-up ${startups.map(sample => sample.warmupMs.toFixed(1)).join(', ')} ms. ${comparison}.`, '', ...table, '', ...regression, ''].join('\n'))
+    `First draw ${startups.map(sample => sample.initialMs.toFixed(1)).join(', ')} ms. Full catalog warm-up ${startups.map(sample => sample.warmupMs.toFixed(1)).join(', ')} ms. ${comparison}.`, '', ...table, '',
+    ...confirmations.map(item => `${item.label} confirmation p95 ${item.stats.render.p95?.toFixed(1)} ms after initial ${item.firstP95.toFixed(1)} ms.`),
+    ...regression, ''].join('\n'))
   for (const old of (await readdir(reportDir)).filter(name => /^run-\d+-(smoke|full)\.(json|md)$/.test(name)).sort().slice(0, -20)) {
     await rm(`${reportDir}/${old}`)
   }

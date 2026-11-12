@@ -20,6 +20,10 @@ Choose **Whole scene**, **Person only**, **Background only**, or **Split style**
 
 **Save PNG** and **Record video** capture the processed canvas. Recording supports pause and resume and stops after five minutes or at its memory limit. The studio includes an **OBS setup** panel with the capture-window title and a generated test pattern.
 
+Visual snap recognition is the default. Choose **Visual + audio**, then **Enable microphone** to require a nearby audio transient with a recognized release. **Calibrate snaps** shows the accepted count and cooldown. Microphone access is separate from the camera and local recordings are video-only.
+
+Use **Transitions** to choose from ten styles, tune the duration and strength, or turn transitions off. **Effect rotation and presets** lets you reorder, exclude, or shuffle effects and save the rotation and numeric settings locally.
+
 In OBS create a scene containing one **Window Capture** source aimed at **SNAP//REALITY — OBS OUTPUT**. Disable cursor capture, use client-area capture when available, and set canvas and output to **1280×720 at 30 FPS**. Start OBS Virtual Camera and select **OBS Virtual Camera** in the receiving app. Select your microphone there separately. Follow the [OBS setup and hardware acceptance checklist](docs/OBS_SETUP.md) and [troubleshooting guide](docs/OBS_TROUBLESHOOTING.md).
 
 ### Portable Windows build

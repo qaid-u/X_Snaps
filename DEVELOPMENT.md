@@ -16,6 +16,10 @@ The pinned person segmenter and all four scopes passed synthetic-camera tests an
 
 PNG and bounded recording passed browser capture tests, and Electron saved a PNG from its dedicated output canvas. See [capture results](reports/iterations/06-local-capture.md).
 
+Synthetic microphone opt-in and cleanup passed in Chrome and Electron. The audio worklet sends only transient times and levels to the detector. See [audio confirmation results](reports/iterations/07-audio-confirmation.md).
+
+The ten GPU transitions and local effect rotation passed browser pixel and persistence tests, the Electron integration test and the 720p smoke gate. See [transition and rotation results](reports/iterations/08-transitions-and-rotation.md).
+
 ## 2026-11-11 — Windows discovery and Stage 2 checkpoint
 
 The workspace started without source files or Git metadata. The implementation plan was to establish the native DEMO → five effects → transition → Perform Mode path first, preserve that project, then add the tracker, catalog, performance controls and verification.

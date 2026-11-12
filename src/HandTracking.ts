@@ -9,14 +9,14 @@ export class HandTracking {
   sensitivity = .5
   cooldown = 650
 
-  constructor(video: HTMLVideoElement, hz: () => number, snap: () => void,
+  constructor(video: HTMLVideoElement, hz: () => number, snap: (at: number) => void,
     measured: (inferenceMs: number) => void, skipped: () => void) {
     this.worker = new VideoInference('hand', video, hz, () => 480, result => {
       measured(result.inferenceMs)
       this.detector.sensitivity = this.sensitivity
       this.detector.cooldownMs = this.cooldown
       this.visible = !!result.hand
-      if (this.detector.step(result.at, result.hand)) snap()
+      if (this.detector.step(result.at, result.hand)) snap(result.at)
     }, skipped)
   }
 

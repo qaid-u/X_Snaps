@@ -57,6 +57,11 @@ test('native output owns camera and renderer while controls can close and reopen
     await expect.poll(async () => (await readdir(downloads)).filter(name => name.endsWith('.png')).length).toBe(1)
     const filename = (await readdir(downloads)).find(name => name.endsWith('.png'))!
     await expect.poll(async () => (await readFile(resolve(downloads, filename))).subarray(0, 8).toString('hex')).toBe('89504e470d0a1a0a')
+    await newControl.getByRole('combobox', { name: 'Detection mode' }).selectOption('1')
+    await newControl.getByRole('button', { name: 'Enable microphone' }).click()
+    await expect(newControl.getByRole('button', { name: 'Disable microphone' })).toBeVisible()
+    await newControl.getByRole('button', { name: 'Disable microphone' }).click()
+    await expect(newControl.getByRole('button', { name: 'Enable microphone' })).toBeVisible()
     await newControl.getByRole('button', { name: 'Stop camera' }).click()
     await expect(newControl.getByRole('status')).toContainText('Camera stopped')
   } finally {

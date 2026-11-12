@@ -1,11 +1,15 @@
 import type { Engine } from './Engine'
+import type { Playlist } from './playlist'
+import type { TransitionSettings } from './transition'
 
 export type Command =
   | { action: 'start'; device: string }
-  | { action: 'stop' | 'next' | 'previous' | 'still' | 'record' | 'pause' }
-  | { action: 'effect' | 'strength' | 'amount' | 'sensitivity' | 'scope' | 'background'; value: number }
-  | { action: 'mirror' | 'cover' | 'tracking' | 'transition'; value: boolean }
+  | { action: 'stop' | 'next' | 'previous' | 'still' | 'record' | 'pause' | 'mic' | 'save-effects' }
+  | { action: 'effect' | 'strength' | 'amount' | 'sensitivity' | 'scope' | 'background' | 'detection' | 'mic-sensitivity' | 'cooldown'; value: number }
+  | { action: 'mirror' | 'cover' | 'tracking'; value: boolean }
   | { action: 'profile'; level: number; locked: boolean }
+  | { action: 'rotation'; value: Playlist }
+  | { action: 'transition'; value: TransitionSettings }
 
 export type DesktopState = {
   ready: boolean

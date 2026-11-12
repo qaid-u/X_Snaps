@@ -4,6 +4,8 @@ import { effects } from './effects'
 import { EffectCatalog } from './EffectCatalog'
 import { ScopeControls } from './ScopeControls'
 import { CaptureControls, OBSGuide } from './CaptureControls'
+import { DetectionControls } from './DetectionControls'
+import { RotationControls, TransitionControls } from './RotationControls'
 import { profiles } from './performance'
 
 const benchmark = import.meta.env.VITE_BENCHMARK === '1' && new URLSearchParams(location.search).has('benchmark')
@@ -41,6 +43,9 @@ export function App() {
     try {
       instance = new Engine(canvas.current!, setMessage)
       engine.current = instance
+      const initial = instance.snapshot()
+      setStrength(initial.strength)
+      setSensitivity(initial.sensitivity)
       instance.onEffect = id => {
         setEffect(id)
         setAmount(instance.effectAmount)
@@ -61,7 +66,7 @@ export function App() {
       .catch(() => {})
     void refresh()
     navigator.mediaDevices?.addEventListener('devicechange', refresh)
-    const release = () => instance.stopCamera()
+    const release = () => { instance.stopCamera(); instance.mic.stop() }
     window.addEventListener('pagehide', release)
     return () => {
       active = false
@@ -166,6 +171,9 @@ export function App() {
         if (engine.current) engine.current.hands.sensitivity = event.target.valueAsNumber
       }} /></label>
       <p className="stats">{stats?.handStatus ?? 'Hand tracking off'}</p>
+      <DetectionControls metrics={stats} mode={value => engine.current?.setDetectionMode(value)}
+        mic={() => engine.current?.toggleMic()} sensitivity={value => engine.current?.mic.setSensitivity(value)}
+        cooldown={value => { if (engine.current) engine.current.hands.cooldown = value }} />
       <h2>Processing</h2>
       <ScopeControls scope={scope} background={background} status={camera === 'demo' ? 'Demo mask' :
         stats?.maskFresh ? 'Person mask active' : 'Whole scene while mask unavailable. ' + (stats?.maskStatus ?? '')}
@@ -183,6 +191,9 @@ export function App() {
         setAmount(event.target.valueAsNumber)
         engine.current?.setAmount(event.target.valueAsNumber)
       }} /></label>}
+      <TransitionControls settings={stats?.transition} change={value => engine.current?.setTransition(value)} />
+      <RotationControls playlist={stats?.playlist} save={value => engine.current?.setPlaylist(value)}
+        saveEffects={() => engine.current?.saveEffects()} />
       <CaptureControls state={stats?.recording ?? 'idle'} disabled={!ready} still={() => engine.current?.capture.requestStill()}
         record={() => engine.current?.record()} pause={() => engine.current?.capture.pause()} />
       <OBSGuide camera={camera === 'live' ? 'Physical webcam' : 'Generated DEMO'} show={() => { if (ready) setClean(true) }}

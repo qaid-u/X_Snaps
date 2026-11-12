@@ -4,6 +4,8 @@ import { effects } from './effects'
 import { EffectCatalog } from './EffectCatalog'
 import { ScopeControls } from './ScopeControls'
 import { CaptureControls, OBSGuide } from './CaptureControls'
+import { DetectionControls } from './DetectionControls'
+import { RotationControls, TransitionControls } from './RotationControls'
 import { profiles } from './performance'
 import type { Command, DesktopState } from './desktop-protocol'
 
@@ -87,8 +89,14 @@ export function DesktopOutput() {
         case 'still': instance.capture.requestStill(); break
         case 'record': instance.record(); break
         case 'pause': instance.capture.pause(); break
+        case 'detection': instance.setDetectionMode(command.value); break
+        case 'mic': instance.toggleMic(); break
+        case 'mic-sensitivity': instance.mic.setSensitivity(command.value); break
+        case 'cooldown': instance.hands.cooldown = command.value; break
         case 'sensitivity': instance.hands.sensitivity = command.value; break
-        case 'transition': instance.transition = command.value; break
+        case 'transition': instance.setTransition(command.value); break
+        case 'rotation': instance.setPlaylist(command.value); break
+        case 'save-effects': instance.saveEffects(); break
         case 'profile': instance.setProfile(command.level, command.locked); break
       }
       publish()
@@ -172,6 +180,9 @@ export function DesktopControl() {
         <label>Sensitivity<input type="range" min="0" max="1" step=".05" defaultValue={metrics?.sensitivity ?? .5}
           onChange={event => run({ action: 'sensitivity', value: event.target.valueAsNumber })} /></label>
         <p className="stats">{metrics?.handStatus}</p>
+        <DetectionControls metrics={metrics} mode={value => run({ action: 'detection', value })}
+          mic={() => run({ action: 'mic' })} sensitivity={value => run({ action: 'mic-sensitivity', value })}
+          cooldown={value => run({ action: 'cooldown', value })} />
         <h2>Processing</h2>
         <ScopeControls scope={metrics?.scope ?? 0} background={metrics?.backgroundEffect ?? 3}
           status={!live ? 'Demo mask' : metrics?.maskFresh ? 'Person mask active' : 'Whole scene while mask unavailable. ' + (metrics?.maskStatus ?? '')}
@@ -188,7 +199,9 @@ export function DesktopControl() {
         {!!metrics?.effect && <label>{effects[metrics.effect].control}<input type="range" key={metrics.effect}
           min="0" max="1" step=".01" defaultValue={metrics.effectAmount}
           onChange={event => run({ action: 'amount', value: event.target.valueAsNumber })} /></label>}
-        <label className="check"><input type="checkbox" checked={metrics?.transition ?? true} onChange={event => run({ action: 'transition', value: event.target.checked })} />Transition</label>
+        <TransitionControls settings={metrics?.transition} change={value => run({ action: 'transition', value })} />
+        <RotationControls playlist={metrics?.playlist} save={value => run({ action: 'rotation', value })}
+          saveEffects={() => run({ action: 'save-effects' })} />
         <CaptureControls state={metrics?.recording ?? 'idle'} disabled={!usable} still={() => run({ action: 'still' })}
           record={() => run({ action: 'record' })} pause={() => run({ action: 'pause' })} />
         {bridge && <OBSGuide camera={live ? 'Physical webcam' : 'Generated DEMO'} show={() => { void bridge.showOutput() }}

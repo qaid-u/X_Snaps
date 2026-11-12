@@ -5,11 +5,18 @@ import {
 import type { Texture } from 'three'
 import { Camera } from './Camera'
 import { Capture } from './Capture'
+import { Microphone, SnapFusion } from './audio'
 import { HandTracking } from './HandTracking'
 import { VideoInference } from './VideoInference'
 import type { VisionResult } from './vision.protocol'
 import { effects, fragment, previewFragment, vertex } from './effects'
 import { PerformanceGovernor, PerformanceMonitor, profiles } from './performance'
+import { loadPlaylist, nextEffect, normalizePlaylist, savePlaylist } from './playlist'
+import type { Playlist } from './playlist'
+import { defaultTransition } from './transition'
+import type { TransitionSettings } from './transition'
+
+const effectSettingsKey = 'snap-reality.effect-settings.v1'
 
 class GpuTimer {
   private readonly extension
@@ -68,12 +75,17 @@ export class Engine {
   readonly camera = new Camera()
   readonly metrics = new PerformanceMonitor()
   readonly governor = new PerformanceGovernor()
+  private readonly fusion = new SnapFusion()
+  readonly mic = new Microphone(at => this.heardSnap(at))
   readonly hands = new HandTracking(this.camera.video, () => profiles[this.governor.level].handHz,
-    () => this.next(1, performance.now(), true), ms => this.metrics.hand.add(ms), () => this.metrics.skippedInference++)
+    at => this.sawSnap(at), ms => this.metrics.hand.add(ms), () => this.metrics.skippedInference++)
   private readonly maskWorker = new VideoInference<Extract<VisionResult, { type: 'mask' }>>('mask', this.camera.video,
     () => [7, 10, 14][this.governor.level], () => this.governor.level ? 256 : 192,
     mask => this.acceptMask(mask), () => this.metrics.skippedMasks++)
   trackingEnabled = true
+  private detectionMode = 0
+  private snapCount = 0
+  private snappedAt = -Infinity
   onEffect?: (id: number) => void
   private readonly renderer
   private readonly geometry = new PlaneGeometry(2, 2)
@@ -86,6 +98,8 @@ export class Engine {
   private readonly history = Array.from({ length: 3 }, () => new WebGLRenderTarget(320, 180, { depthBuffer: false }))
   private readonly split = new WebGLRenderTarget(640, 360, { depthBuffer: false })
   private readonly amounts = new Map<number, number>()
+  private playlist = loadPlaylist()
+  private transitionSettings = { ...defaultTransition }
   private readonly uniforms = {
     live: { value: this.blank as DataTexture | VideoTexture },
     titleMap: { value: this.title }, recentFrame: { value: this.blank as Texture },
@@ -95,6 +109,7 @@ export class Engine {
     demo: { value: true }, mirrored: { value: false }, fit: { value: new Vector2(1, 1) },
     size: { value: new Vector2(1280, 720) }, effect: { value: 0 }, time: { value: 0 },
     strength: { value: 1 }, amount: { value: .5 }, impact: { value: 0 }, detailLevel: { value: 1 },
+    transitionStyle: { value: 1 }, transitionStrength: { value: .7 },
   }
   private readonly material = new ShaderMaterial({ uniforms: this.uniforms, vertexShader: vertex, fragmentShader: fragment,
     depthTest: false, depthWrite: false })
@@ -123,10 +138,10 @@ export class Engine {
   initialMs = 0
   warmupMs = 0
   cover = false
-  transition = true
 
   constructor(readonly canvas: HTMLCanvasElement, private readonly status: (status: string) => void) {
     this.capture = new Capture(canvas, status)
+    this.restoreEffects()
     this.renderer = new WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'high-performance' })
     this.renderer.debug.onShaderError = (gl, program, vert, frag) => {
       this.shaderError = [gl.getProgramInfoLog(program), gl.getShaderInfoLog(vert), gl.getShaderInfoLog(frag)].filter(Boolean).join(' ')
@@ -173,6 +188,7 @@ export class Engine {
           this.uniforms.impact.value = .5
           for (const effect of effects.slice(index, index + 4)) {
             this.uniforms.effect.value = effect.id
+            this.uniforms.transitionStyle.value = 1 + effect.id % 10
             this.renderer.render(warming, this.clip)
           }
         } finally {
@@ -225,7 +241,10 @@ export class Engine {
     if (this.disposed || this.lost || !this.warmupMs || !effects.some(effect => effect.id === id)) return false
     if (cooldown && at - this.lastTriggerAt < 420) return false
     this.lastTriggerAt = at
-    this.transitionAt = this.transition && id !== 0 ? at : -Infinity
+    const transition = this.transitionSettings.style
+    this.uniforms.transitionStyle.value = transition === -1 ? 1 + (id - 1 + 10) % 10
+      : transition === -2 ? 1 + Math.floor(Math.random() * 10) : transition
+    this.transitionAt = transition !== 0 && id !== 0 ? at : -Infinity
     this.metrics.triggered(at)
     this.uniforms.effect.value = id
     this.uniforms.amount.value = this.amounts.get(id) ?? .5
@@ -235,14 +254,39 @@ export class Engine {
   }
 
   next(step = 1, at = performance.now(), cooldown = false) {
-    const index = effects.findIndex(effect => effect.id === this.effect)
-    const first = step > 0 ? 1 : effects.length - 1
-    const next = index < 1 ? first : 1 + ((index - 1 + step + effects.length - 1) % (effects.length - 1))
-    return this.select(effects[next].id, at, cooldown)
+    return this.select(nextEffect(this.playlist, this.effect, step), at, cooldown)
   }
 
   setMirror(value: boolean) { this.uniforms.mirrored.value = value }
   setStrength(value: number) { this.uniforms.strength.value = value }
+  setPlaylist(value: Playlist) {
+    this.playlist = normalizePlaylist(value)
+    savePlaylist(this.playlist)
+  }
+  setTransition(value: TransitionSettings) { this.transitionSettings = { ...value } }
+  saveEffects() {
+    try {
+      localStorage.setItem(effectSettingsKey, JSON.stringify({
+        strength: this.uniforms.strength.value, amounts: Object.fromEntries(this.amounts),
+        hand: this.hands.sensitivity, microphone: this.mic.sensitivity, cooldown: this.hands.cooldown,
+      }))
+    } catch { /* Keep the current settings active when storage is unavailable. */ }
+  }
+
+  private restoreEffects() {
+    try {
+      const values = JSON.parse(localStorage.getItem(effectSettingsKey) ?? 'null')
+      if (!values || typeof values !== 'object') return
+      for (const { id } of effects) {
+        const value = values.amounts?.[id]
+        if (Number.isFinite(value) && value >= 0 && value <= 1) this.amounts.set(id, value)
+      }
+      if (Number.isFinite(values.strength) && values.strength >= 0 && values.strength <= 1) this.setStrength(values.strength)
+      if (Number.isFinite(values.hand) && values.hand >= 0 && values.hand <= 1) this.hands.sensitivity = values.hand
+      if (Number.isFinite(values.microphone) && values.microphone >= 0 && values.microphone <= 1) this.mic.setSensitivity(values.microphone)
+      if (Number.isInteger(values.cooldown) && values.cooldown >= 250 && values.cooldown <= 1500) this.hands.cooldown = values.cooldown
+    } catch { /* Use defaults for unreadable preferences. */ }
+  }
   record() {
     if (this.capture.state === 'idle') this.capture.start(profiles[this.governor.level].fps)
     else this.capture.stop()
@@ -310,19 +354,52 @@ export class Engine {
     this.cameraLive = started
     this.newestVideoAt = performance.now()
     this.stalled = false
-    if (started && this.trackingEnabled) this.hands.start()
+    if (started && this.trackingEnabled && this.detectionMode <= 1) this.hands.start()
     this.updateMaskWorker()
     return started
   }
 
   setTracking(enabled: boolean) {
     this.trackingEnabled = enabled
-    if (enabled && this.cameraLive) this.hands.start()
+    if (enabled && this.cameraLive && this.detectionMode <= 1) this.hands.start()
     else this.hands.stop()
+  }
+
+  setDetectionMode(value: number) {
+    if (this.detectionMode === value) return
+    this.detectionMode = value
+    this.fusion.clear()
+    if (value === 0 || value === 3) this.mic.stop()
+    this.setTracking(this.trackingEnabled)
+  }
+
+  toggleMic() {
+    if (this.detectionMode !== 1 && this.detectionMode !== 2) return
+    this.fusion.clear()
+    if (this.mic.state === 'active') this.mic.stop()
+    else void this.mic.start()
+  }
+
+  private sawSnap(at: number) {
+    if (this.detectionMode === 0 || (this.detectionMode === 1 &&
+      (this.mic.state !== 'active' || this.fusion.visual(at)))) this.confirmSnap()
+  }
+
+  private heardSnap(at: number) {
+    if (this.detectionMode === 2 || (this.detectionMode === 1 && this.fusion.audio(at))) this.confirmSnap()
+  }
+
+  private confirmSnap() {
+    const at = performance.now()
+    if (at - this.snappedAt >= this.hands.cooldown && this.next(1, at, true)) {
+      this.snappedAt = at
+      this.snapCount++
+    }
   }
 
   stopCamera() {
     this.cameraLive = false
+    this.fusion.clear()
     this.clearHistory()
     this.hands.stop()
     this.stopMask()
@@ -352,14 +429,16 @@ export class Engine {
       recording: this.capture.state,
       mirror: this.uniforms.mirrored.value, cover: this.cover, trackingEnabled: this.trackingEnabled,
       sensitivity: this.hands.sensitivity, selectedProfile: this.governor.ceiling, locked: this.governor.locked,
-      strength: this.uniforms.strength.value, transition: this.transition,
+      strength: this.uniforms.strength.value, transition: this.transitionSettings, playlist: this.playlist,
+      detectionMode: this.detectionMode, snapCount: this.snapCount, cooldown: this.hands.cooldown,
+      micState: this.mic.state, micMessage: this.mic.message, micLevel: this.mic.level, micSensitivity: this.mic.sensitivity,
     }
   }
 
   // The benchmark uses deterministic timestamps when checking pixel identity.
-  sampleAt(time: number) {
+  sampleAt(time: number, impact = 0) {
     this.uniforms.time.value = time
-    this.uniforms.impact.value = 0
+    this.uniforms.impact.value = impact
     this.renderCurrent()
     const gl = this.renderer.getContext()
     const pixels = new Uint8Array(this.canvas.width * this.canvas.height * 4)
@@ -451,7 +530,10 @@ export class Engine {
         this.cover ? Math.min(1, 1 / ratio) : Math.max(1, 1 / ratio))
     }
     this.uniforms.time.value = now / 1000
-    this.uniforms.impact.value = Math.max(0, 1 - (now - this.transitionAt) / 240)
+    const { duration, strength, reducedFlash, eased } = this.transitionSettings
+    const remaining = Math.max(0, Math.min(1, 1 - (now - this.transitionAt) / duration))
+    this.uniforms.impact.value = eased ? remaining * remaining : remaining
+    this.uniforms.transitionStrength.value = reducedFlash ? strength * .5 : strength
     this.timer.begin()
     try {
       this.renderCurrent()
@@ -474,6 +556,7 @@ export class Engine {
   dispose() {
     this.disposed = true
     this.stopCamera()
+    this.mic.stop()
     this.capture.dispose()
     cancelAnimationFrame(this.handle)
     this.canvas.removeEventListener('webglcontextlost', this.onContextLost)

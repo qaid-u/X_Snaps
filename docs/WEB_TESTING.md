@@ -18,6 +18,6 @@ npm run perf:benchmark
 Remove-Item Env:SNAP_WRITE_BASELINE
 ```
 
-The 10% p95 frame-interval gate compares equivalent runs. The first playable draw and full shader preparation use separate startup measurements. Stable shader-program and texture counts catch allocation during switches. GPU time is reported when WebGL's timer query returns a valid sample. Source FPS is blank for the procedural DEMO. Trigger-to-draw measures accepted event to renderer submission using the app clock.
+The 10% p95 frame-interval gate compares equivalent runs and retains the initial sample and any confirmation runs. The first playable draw and full shader preparation use separate startup measurements. Stable shader-program and texture counts catch allocation during switches. GPU time is reported when WebGL's timer query returns a valid sample. Source FPS is blank for the procedural DEMO. Trigger-to-draw measures accepted event to renderer submission using the app clock.
 
 For physical media devices, true snap accuracy, OBS delivery and release soak, follow [OBS setup and hardware acceptance](OBS_SETUP.md). Record each environment and result with the iteration. See [iteration reports](../ITERATION_REPORT.md).

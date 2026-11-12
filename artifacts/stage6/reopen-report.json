@@ -1,0 +1,24 @@
+{
+  "requested": "SnapReality.toe",
+  "opened": "SnapReality.1.toe",
+  "same_bytes": true,
+  "perform_on_start": true,
+  "space_selected": "06",
+  "space_snap_count": 1,
+  "clean_output_observed": true,
+  "clean_output_closed_by_title_bar": true,
+  "escape_exited_perform_mode": true,
+  "runtime_check": {
+    "project": "SnapReality.1.toe",
+    "resolution": [
+      960,
+      540
+    ],
+    "selected_shader_delta": 0.06174555420875549,
+    "keyboard_active": true,
+    "perform_mode": false
+  },
+  "shader_dats_reloaded": 1,
+  "active_callback_errors": {},
+  "sha256": "af90412b3f487d17d79590444a128e504d9a2947cceb4afcfb77add4d6d26d1b"
+}

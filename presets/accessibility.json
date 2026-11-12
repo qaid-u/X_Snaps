@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "default": "LOW_FLASH",
+  "presets": {
+    "LOW_FLASH": {"max_flash_strength":0.075,"max_flash_seconds":0.038,"layer_strength":0.78},
+    "STANDARD": {"max_flash_strength":0.30,"max_flash_seconds":0.067,"layer_strength":1.0}
+  },
+  "warning":"Transitions and visual effects can contain rapidly changing colors or high-contrast shapes. Use GentleLowFlash or Original if those visuals cause discomfort."
+}

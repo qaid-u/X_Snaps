@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SNAP//REALITY reference archetypes and DEMO showcase",
+  "type": "object",
+  "required": ["schema_version", "title", "inspirations", "showcase"],
+  "properties": {
+    "$schema": {"type":"string"},
+    "schema_version": {"const":1},
+    "title": {"type":"string"},
+    "inspirations": {
+      "type":"array",
+      "minItems":1,
+      "items":{
+        "type":"object",
+        "required":["label","description"],
+        "properties":{
+          "label":{"type":"string","pattern":"^[0-9]{2}:[0-9]{2}–[0-9]{2}:[0-9]{2}$"},
+          "description":{"type":"string","minLength":1}
+        },
+        "additionalProperties":false
+      }
+    },
+    "showcase": {
+      "type":"object",
+      "required":["duration","source","cues"],
+      "properties":{
+        "duration":{"type":"number","minimum":60,"maximum":75},
+        "source":{"const":"DEMO"},
+        "cues":{
+          "type":"array",
+          "minItems":1,
+          "items":{
+            "type":"object",
+            "required":["at","effect_id","transition_id","inspiration"],
+            "properties":{
+              "at":{"type":"number","minimum":0,"exclusiveMaximum":75},
+              "effect_id":{"type":"string","pattern":"^(0[0-9]|1[0-9]|20)$"},
+              "transition_id":{"type":"string","minLength":1},
+              "inspiration":{"type":"string","pattern":"^[0-9]{2}:[0-9]{2}–[0-9]{2}:[0-9]{2}$"}
+            },
+            "additionalProperties":false
+          }
+        }
+      },
+      "additionalProperties":false
+    }
+  },
+  "additionalProperties": false
+}

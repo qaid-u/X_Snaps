@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "transitions": [
+    {"id":"SnapChain","duration":0.48,"center":[0.50,0.50],"impact_duration":0.032,"flash_strength":0.24,"wipe":"RADIAL","audio_cue":null,
+     "elements":[{"id":"IMPACT_FRAME","start":0.10,"end":0.25},{"id":"TYPE_SNAP","start":0.14,"end":0.82},{"id":"SHARD_PORTAL","start":0.12,"end":0.80}]},
+    {"id":"ComicHit","duration":0.43,"center":[0.50,0.49],"impact_duration":0.030,"flash_strength":0.21,"wipe":"DIAGONAL","audio_cue":null,
+     "elements":[{"id":"IMPACT_FRAME","start":0.10,"end":0.28},{"id":"TYPE_POP","start":0.10,"end":0.88},{"id":"NEON_BEAMS","start":0.14,"end":0.70}]},
+    {"id":"InkPortal","duration":0.60,"center":[0.46,0.52],"impact_duration":0.045,"flash_strength":0.14,"wipe":"INK_WIPE","audio_cue":null,
+     "elements":[{"id":"INK_WIPE","start":0.10,"end":0.92},{"id":"SHARD_PORTAL","start":0.31,"end":0.91}]},
+    {"id":"GlitchBreak","duration":0.40,"center":[0.50,0.50],"impact_duration":0.022,"flash_strength":0.17,"wipe":"DIGITAL","audio_cue":null,
+     "elements":[{"id":"IMPACT_FRAME","start":0.09,"end":0.25},{"id":"DIGITAL_FRAGMENT","start":0.07,"end":0.87}]},
+    {"id":"NeonSwitch","duration":0.55,"center":[0.50,0.49],"impact_duration":0.034,"flash_strength":0.17,"wipe":"RADIAL","audio_cue":null,
+     "elements":[{"id":"NEON_BEAMS","start":0.08,"end":0.70},{"id":"PERSPECTIVE_TUNNEL","start":0.25,"end":0.95}]},
+    {"id":"GentleLowFlash","duration":0.62,"center":[0.50,0.50],"impact_duration":0.040,"flash_strength":0.0,"wipe":"CROSSFADE","audio_cue":null,
+     "elements":[{"id":"PASTEL_POLYGONS","start":0.13,"end":0.91}]},
+    {"id":"SolarBurst","duration":0.52,"center":[0.53,0.50],"impact_duration":0.040,"flash_strength":0.18,"wipe":"RADIAL","audio_cue":null,
+     "elements":[{"id":"EXPLOSION_BURST","start":0.10,"end":0.87},{"id":"NEON_BEAMS","start":0.08,"end":0.55}]},
+    {"id":"GoldenGate","duration":0.63,"center":[0.50,0.50],"impact_duration":0.038,"flash_strength":0.10,"wipe":"RADIAL","audio_cue":null,
+     "elements":[{"id":"GOLDEN_SIGIL","start":0.07,"end":0.90},{"id":"SHARD_PORTAL","start":0.27,"end":0.95}]},
+    {"id":"PastelDrift","duration":0.61,"center":[0.48,0.52],"impact_duration":0.045,"flash_strength":0.0,"wipe":"CROSSFADE","audio_cue":null,
+     "elements":[{"id":"PASTEL_POLYGONS","start":0.02,"end":0.98}]},
+    {"id":"PerspectiveRush","duration":0.62,"center":[0.50,0.48],"impact_duration":0.038,"flash_strength":0.12,"wipe":"RADIAL","audio_cue":null,
+     "elements":[{"id":"PERSPECTIVE_TUNNEL","start":0.03,"end":0.98},{"id":"EXPLOSION_BURST","start":0.18,"end":0.72}]},
+    {"id":"InkImpact","duration":0.41,"center":[0.50,0.52],"impact_duration":0.030,"flash_strength":0.20,"wipe":"INK_WIPE","audio_cue":null,
+     "elements":[{"id":"IMPACT_FRAME","start":0.10,"end":0.29},{"id":"INK_WIPE","start":0.09,"end":0.84}]}
+  ]
+}

@@ -1,0 +1,355 @@
+{
+  "schema_version": 1,
+  "effects": [
+    {
+      "id": "00",
+      "name": "ORIGINAL",
+      "group": "Source",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [],
+      "gpu_cost": "low",
+      "dependencies": [],
+      "default_preset": "default",
+      "shader": "shaders/original.frag"
+    },
+    {
+      "id": "01",
+      "name": "REALISM_CGI",
+      "group": "Cinematic",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Detail","default":0.65,"min":0,"max":1},
+        {"name":"Bloom","default":0.35,"min":0,"max":1},
+        {"name":"Vignette","default":0.45,"min":0,"max":1},
+        {"name":"Grain","default":0.2,"min":0,"max":1}
+      ],
+      "gpu_cost": "medium",
+      "dependencies": [],
+      "default_preset": "default",
+      "shader": "shaders/realism_cgi.frag"
+    },
+    {
+      "id": "02",
+      "name": "ILLUSTRATED_2D",
+      "group": "Illustration",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Ink width","default":1.7,"min":1,"max":6},
+        {"name":"Color steps","default":6,"min":2,"max":12},
+        {"name":"Paper grain","default":0.55,"min":0,"max":1},
+        {"name":"Warmth","default":0.35,"min":0,"max":1}
+      ],
+      "gpu_cost": "medium",
+      "dependencies": [],
+      "default_preset": "default",
+      "shader": "shaders/illustrated_2d.frag"
+    },
+    {
+      "id": "03",
+      "name": "COMIC_POP_ART",
+      "group": "Print",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Ink width","default":2.1,"min":1,"max":6},
+        {"name":"Screen period","default":9,"min":4,"max":28},
+        {"name":"Panel border","default":9,"min":0,"max":42},
+        {"name":"Shadow threshold","default":0.48,"min":0,"max":1}
+      ],
+      "gpu_cost": "medium",
+      "dependencies": [],
+      "default_preset": "default",
+      "shader": "shaders/comic_pop_art.frag"
+    },
+    {
+      "id": "04",
+      "name": "HALFTONE_PRINT",
+      "group": "Print",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Screen period","default":8,"min":4,"max":24},
+        {"name":"Ink density","default":1.35,"min":0.4,"max":2},
+        {"name":"Color plates","default":0.75,"min":0,"max":1},
+        {"name":"Paper tint","default":0.45,"min":0,"max":1}
+      ],
+      "gpu_cost": "low",
+      "dependencies": [],
+      "default_preset": "default",
+      "shader": "shaders/halftone_print.frag"
+    },
+    {
+      "id": "05",
+      "name": "CEL_SHADED",
+      "group": "Illustration",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Shade steps","default":4,"min":2,"max":12},
+        {"name":"Ink width","default":2.1,"min":1,"max":6},
+        {"name":"Lighting","default":0.37,"min":0,"max":1},
+        {"name":"Ink strength","default":0.82,"min":0,"max":1}
+      ],
+      "gpu_cost": "medium",
+      "dependencies": [],
+      "default_preset": "default",
+      "shader": "shaders/cel_shaded.frag"
+    },
+    {
+      "id": "06",
+      "name": "POSTERIZED",
+      "group": "Print",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Palette levels","default":4,"min":2,"max":12},
+        {"name":"Dither","default":0.17,"min":0,"max":1},
+        {"name":"Perceptual blend","default":0.32,"min":0,"max":1}
+      ],
+      "gpu_cost": "low",
+      "dependencies": [],
+      "default_preset": "default",
+      "shader": "shaders/posterized.frag"
+    },
+    {
+      "id": "07",
+      "name": "SPEED_LINES",
+      "group": "Motion",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Ray density","default":67,"min":12,"max":140},
+        {"name":"Ray opacity","default":0.66,"min":0,"max":1},
+        {"name":"Center clear radius","default":0.23,"min":0.03,"max":0.7},
+        {"name":"Radial blend","default":1,"min":0,"max":1}
+      ],
+      "gpu_cost": "low",
+      "dependencies": [],
+      "default_preset": "default",
+      "shader": "shaders/speed_lines.frag"
+    },
+    {
+      "id": "08",
+      "name": "RADIAL_ZOOM_BLUR",
+      "group": "Motion",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Zoom depth","default":0.23,"min":0.02,"max":0.7},
+        {"name":"Samples","default":12,"min":4,"max":24},
+        {"name":"Pulse","default":0.65,"min":0,"max":1},
+        {"name":"Pulse speed","default":1.7,"min":0,"max":6}
+      ],
+      "gpu_cost": "high",
+      "dependencies": [],
+      "default_preset": "default",
+      "shader": "shaders/radial_zoom_blur.frag"
+    },
+    {
+      "id": "09",
+      "name": "RGB_GLITCH",
+      "group": "Digital",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Channel spread","default":0.012,"min":0,"max":0.08},
+        {"name":"Block displacement","default":0.22,"min":0,"max":0.5},
+        {"name":"Scanline strength","default":0.21,"min":0,"max":0.7},
+        {"name":"Speed","default":0.8,"min":0.1,"max":3}
+      ],
+      "gpu_cost": "low",
+      "dependencies": [],
+      "default_preset": "default",
+      "shader": "shaders/rgb_glitch.frag"
+    },
+    {
+      "id": "10",
+      "name": "FRAME_ECHO",
+      "group": "Motion",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Decay","default":0.72,"min":0,"max":0.9},
+        {"name":"Horizontal offset","default":0.007,"min":-0.03,"max":0.03},
+        {"name":"Vertical offset","default":0.0015,"min":-0.03,"max":0.03},
+        {"name":"Ghost separation","default":0.42,"min":0,"max":1}
+      ],
+      "gpu_cost": "medium",
+      "dependencies": ["feedback_top"],
+      "default_preset": "default",
+      "shader": "shaders/frame_echo.frag"
+    },
+    {
+      "id": "11",
+      "name": "INK_SPLASH",
+      "group": "Illustration",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Spread","default":0.58,"min":0,"max":1},
+        {"name":"Noise scale","default":5,"min":2,"max":16},
+        {"name":"Bristle density","default":0.75,"min":0,"max":1},
+        {"name":"Speed","default":0.65,"min":0,"max":3}
+      ],
+      "gpu_cost": "low",
+      "dependencies": [],
+      "default_preset": "default",
+      "shader": "shaders/ink_splash.frag"
+    },
+    {
+      "id": "12",
+      "name": "PRISMATIC_FRACTURE",
+      "group": "Geometry",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Cell density","default":6.3,"min":2,"max":18},
+        {"name":"Refraction","default":0.54,"min":0,"max":1},
+        {"name":"Spectrum spread","default":0.014,"min":0,"max":0.06},
+        {"name":"Facet line","default":0.36,"min":0,"max":1}
+      ],
+      "gpu_cost": "high",
+      "dependencies": [],
+      "default_preset": "default",
+      "shader": "shaders/prismatic_fracture.frag"
+    },
+    {
+      "id": "13",
+      "name": "GEOMETRIC_SHATTER",
+      "group": "Geometry",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Shard density","default":7,"min":2,"max":16},
+        {"name":"Displacement","default":0.66,"min":0,"max":1},
+        {"name":"Crack width","default":0.055,"min":0.005,"max":0.12},
+        {"name":"Rotation","default":0.48,"min":0,"max":1}
+      ],
+      "gpu_cost": "high",
+      "dependencies": [],
+      "default_preset": "default",
+      "shader": "shaders/geometric_shatter.frag"
+    },
+    {
+      "id": "14",
+      "name": "NEON_TRAILS",
+      "group": "Motion",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Decay","default":0.69,"min":0,"max":0.9},
+        {"name":"Trail offset","default":0.008,"min":0,"max":0.03},
+        {"name":"Glow radius","default":2.7,"min":1,"max":6},
+        {"name":"Luminous gain","default":0.65,"min":0,"max":1}
+      ],
+      "gpu_cost": "high",
+      "dependencies": ["feedback_top"],
+      "default_preset": "default",
+      "shader": "shaders/neon_trails.frag"
+    },
+    {
+      "id": "15",
+      "name": "COLOR_REMAP",
+      "group": "Cinematic",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Contrast","default":0.62,"min":0,"max":1},
+        {"name":"Hue influence","default":0.36,"min":0,"max":1},
+        {"name":"Highlight bias","default":0.47,"min":0,"max":1}
+      ],
+      "gpu_cost": "low",
+      "dependencies": [],
+      "default_preset": "default",
+      "shader": "shaders/color_remap.frag"
+    },
+    {
+      "id": "16",
+      "name": "VORTEX_PORTAL",
+      "group": "Geometry",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Radius","default":0.34,"min":0.09,"max":0.62},
+        {"name":"Twist","default":0.72,"min":0,"max":1},
+        {"name":"Ring density","default":24,"min":8,"max":70},
+        {"name":"Glow","default":0.76,"min":0,"max":1}
+      ],
+      "gpu_cost": "medium",
+      "dependencies": [],
+      "default_preset": "default",
+      "shader": "shaders/vortex_portal.frag"
+    },
+    {
+      "id": "17",
+      "name": "SYNTHWAVE_GRID",
+      "group": "Geometry",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Horizon","default":0.44,"min":0.18,"max":0.7},
+        {"name":"Grid density","default":13,"min":5,"max":30},
+        {"name":"Grid brightness","default":0.62,"min":0,"max":1},
+        {"name":"Star density","default":0.48,"min":0,"max":1}
+      ],
+      "gpu_cost": "low",
+      "dependencies": [],
+      "default_preset": "default",
+      "shader": "shaders/synthwave_grid.frag"
+    },
+    {
+      "id": "18",
+      "name": "COMIC_STARBURST",
+      "group": "Print",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Spike count","default":14,"min":6,"max":32},
+        {"name":"Radius","default":0.35,"min":0.1,"max":0.65},
+        {"name":"Fill opacity","default":0.68,"min":0,"max":1},
+        {"name":"Speed","default":1.8,"min":0,"max":5}
+      ],
+      "gpu_cost": "low",
+      "dependencies": [],
+      "default_preset": "default",
+      "shader": "shaders/comic_starburst.frag"
+    },
+    {
+      "id": "19",
+      "name": "MIXED_MEDIA",
+      "group": "Digital",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Cutout scale","default":5,"min":2,"max":14},
+        {"name":"Color steps","default":4,"min":2,"max":12},
+        {"name":"Channel spread","default":0.013,"min":0,"max":0.05},
+        {"name":"Cutout speed","default":1.2,"min":0,"max":4}
+      ],
+      "gpu_cost": "medium",
+      "dependencies": [],
+      "default_preset": "default",
+      "shader": "shaders/mixed_media.frag"
+    },
+    {
+      "id": "20",
+      "name": "GRAPHIC_MONOCHROME",
+      "group": "Print",
+      "type": "persistent",
+      "supported_inputs": ["DEMO","SCREEN","VIDEO","IMAGE","CAMERA"],
+      "parameters": [
+        {"name":"Contrast","default":0.66,"min":0,"max":1},
+        {"name":"Accent","default":0.46,"min":0,"max":1},
+        {"name":"Hatch density","default":1,"min":0.3,"max":2.3},
+        {"name":"Slash position","default":0.52,"min":0,"max":1}
+      ],
+      "gpu_cost": "low",
+      "dependencies": [],
+      "default_preset": "default",
+      "shader": "shaders/graphic_monochrome.frag"
+    }
+  ]
+}

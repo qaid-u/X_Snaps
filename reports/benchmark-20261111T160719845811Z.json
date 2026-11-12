@@ -1,0 +1,622 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-11-11T16:08:21.879268+00:00",
+  "touchdesigner_build": "2025.33230",
+  "project": "SnapReality.1.toe",
+  "platform": "Windows-10-10.0.26300-SP0",
+  "cpu": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "requested_seconds": 60.0,
+  "measured_seconds": 60.017,
+  "sampled_frames": 3602,
+  "fps": {
+    "mean": 60.51,
+    "min": 60.0,
+    "p95": 61.0,
+    "max": 61.0
+  },
+  "frame_cook_ms": {
+    "mean": 2.41,
+    "min": 1.659,
+    "p95": 3.472,
+    "max": 9.804
+  },
+  "dropped_frames": 0,
+  "absolute_timeline_frame_gaps": 0,
+  "final_top_cooks": 3602,
+  "effect_samples": {
+    "00": 29,
+    "01": 344,
+    "03": 342,
+    "02": 227,
+    "12": 227,
+    "15": 268,
+    "08": 228,
+    "20": 228,
+    "05": 114,
+    "18": 113,
+    "06": 115,
+    "14": 114,
+    "10": 113,
+    "19": 114,
+    "04": 114,
+    "07": 113,
+    "11": 114,
+    "16": 228,
+    "13": 228,
+    "17": 114,
+    "09": 115
+  },
+  "phase_samples": {
+    "IDLE": 2575,
+    "PRE_IMPACT": 139,
+    "SNAP_IMPACT": 70,
+    "MORPH": 617,
+    "SETTLE": 201
+  },
+  "conditions": [
+    {
+      "at_seconds": 0.0,
+      "conditions": {
+        "source": "DEMO",
+        "profile": "BALANCED",
+        "resolution": [
+          960,
+          540
+        ],
+        "target_fps": 60.0,
+        "perform_mode": true
+      }
+    }
+  ],
+  "trace": [
+    {
+      "elapsed_seconds": 1.017,
+      "fps": 61.0,
+      "cook_ms": 1.7730000019073486,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "01",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 2.0,
+      "fps": 61.0,
+      "cook_ms": 1.9778000116348267,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "01",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 3.017,
+      "fps": 61.0,
+      "cook_ms": 1.9702999591827393,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "03",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 4.0,
+      "fps": 61.0,
+      "cook_ms": 1.9835000038146973,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "03",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 5.0,
+      "fps": 61.0,
+      "cook_ms": 1.9401999711990356,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "02",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 6.017,
+      "fps": 60.0,
+      "cook_ms": 2.299600124359131,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "02",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 7.017,
+      "fps": 60.0,
+      "cook_ms": 2.361299991607666,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "01",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 8.017,
+      "fps": 61.0,
+      "cook_ms": 2.204200029373169,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "01",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 9.017,
+      "fps": 61.0,
+      "cook_ms": 2.1491000652313232,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "12",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 10.0,
+      "fps": 60.0,
+      "cook_ms": 2.273200035095215,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "15",
+      "phase": "PRE_IMPACT"
+    },
+    {
+      "elapsed_seconds": 11.0,
+      "fps": 61.0,
+      "cook_ms": 2.221100091934204,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "15",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 12.0,
+      "fps": 60.0,
+      "cook_ms": 2.5292999744415283,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "08",
+      "phase": "MORPH"
+    },
+    {
+      "elapsed_seconds": 13.001,
+      "fps": 61.0,
+      "cook_ms": 2.034600019454956,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "08",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 14.0,
+      "fps": 60.0,
+      "cook_ms": 2.0527000427246094,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "20",
+      "phase": "MORPH"
+    },
+    {
+      "elapsed_seconds": 15.0,
+      "fps": 60.0,
+      "cook_ms": 2.1496999263763428,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "20",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 16.017,
+      "fps": 61.0,
+      "cook_ms": 2.0155999660491943,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "05",
+      "phase": "MORPH"
+    },
+    {
+      "elapsed_seconds": 17.0,
+      "fps": 60.0,
+      "cook_ms": 2.2054998874664307,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "05",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 18.017,
+      "fps": 60.0,
+      "cook_ms": 2.4974000453948975,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "18",
+      "phase": "MORPH"
+    },
+    {
+      "elapsed_seconds": 19.0,
+      "fps": 60.0,
+      "cook_ms": 2.0576000213623047,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "18",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 20.0,
+      "fps": 60.0,
+      "cook_ms": 2.4261999130249023,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "06",
+      "phase": "SETTLE"
+    },
+    {
+      "elapsed_seconds": 21.0,
+      "fps": 60.0,
+      "cook_ms": 2.652600049972534,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "06",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 22.017,
+      "fps": 61.0,
+      "cook_ms": 2.1268999576568604,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "03",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 23.0,
+      "fps": 61.0,
+      "cook_ms": 2.327699899673462,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "03",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 24.017,
+      "fps": 61.0,
+      "cook_ms": 1.888200044631958,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "20",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 25.0,
+      "fps": 61.0,
+      "cook_ms": 1.8681999444961548,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "20",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 26.017,
+      "fps": 61.0,
+      "cook_ms": 1.826799988746643,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "14",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 27.0,
+      "fps": 61.0,
+      "cook_ms": 1.9630000591278076,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "14",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 28.017,
+      "fps": 61.0,
+      "cook_ms": 2.127000093460083,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "10",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 29.001,
+      "fps": 60.0,
+      "cook_ms": 3.4660000801086426,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "01",
+      "phase": "PRE_IMPACT"
+    },
+    {
+      "elapsed_seconds": 30.0,
+      "fps": 61.0,
+      "cook_ms": 2.579400062561035,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "01",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 31.0,
+      "fps": 60.0,
+      "cook_ms": 4.876200199127197,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "19",
+      "phase": "MORPH"
+    },
+    {
+      "elapsed_seconds": 32.0,
+      "fps": 61.0,
+      "cook_ms": 2.529599905014038,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "19",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 33.0,
+      "fps": 61.0,
+      "cook_ms": 2.1238999366760254,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "03",
+      "phase": "MORPH"
+    },
+    {
+      "elapsed_seconds": 34.0,
+      "fps": 60.0,
+      "cook_ms": 2.4716999530792236,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "03",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 35.0,
+      "fps": 61.0,
+      "cook_ms": 2.0934998989105225,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "04",
+      "phase": "MORPH"
+    },
+    {
+      "elapsed_seconds": 36.017,
+      "fps": 61.0,
+      "cook_ms": 2.332900047302246,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "04",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 37.0,
+      "fps": 60.0,
+      "cook_ms": 2.605799913406372,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "07",
+      "phase": "MORPH"
+    },
+    {
+      "elapsed_seconds": 38.017,
+      "fps": 61.0,
+      "cook_ms": 1.9891999959945679,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "07",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 39.0,
+      "fps": 61.0,
+      "cook_ms": 2.1972999572753906,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "15",
+      "phase": "SETTLE"
+    },
+    {
+      "elapsed_seconds": 40.0,
+      "fps": 60.0,
+      "cook_ms": 2.300100088119507,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "15",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 41.0,
+      "fps": 61.0,
+      "cook_ms": 2.277100086212158,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "11",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 42.017,
+      "fps": 61.0,
+      "cook_ms": 2.55679988861084,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "11",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 43.0,
+      "fps": 61.0,
+      "cook_ms": 2.0264999866485596,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "08",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 44.017,
+      "fps": 61.0,
+      "cook_ms": 2.1979000568389893,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "08",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 45.017,
+      "fps": 60.0,
+      "cook_ms": 2.224100112915039,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "16",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 46.017,
+      "fps": 61.0,
+      "cook_ms": 2.1414999961853027,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "16",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 47.017,
+      "fps": 60.0,
+      "cook_ms": 2.1916000843048096,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "12",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 48.0,
+      "fps": 60.0,
+      "cook_ms": 2.5099000930786133,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "13",
+      "phase": "PRE_IMPACT"
+    },
+    {
+      "elapsed_seconds": 49.017,
+      "fps": 61.0,
+      "cook_ms": 2.4739999771118164,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "13",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 50.001,
+      "fps": 61.0,
+      "cook_ms": 2.048799991607666,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "16",
+      "phase": "SNAP_IMPACT"
+    },
+    {
+      "elapsed_seconds": 51.001,
+      "fps": 60.0,
+      "cook_ms": 2.251800060272217,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "16",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 52.0,
+      "fps": 60.0,
+      "cook_ms": 2.5761001110076904,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "17",
+      "phase": "MORPH"
+    },
+    {
+      "elapsed_seconds": 53.017,
+      "fps": 60.0,
+      "cook_ms": 2.487499952316284,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "17",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 54.0,
+      "fps": 60.0,
+      "cook_ms": 3.769700050354004,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "13",
+      "phase": "MORPH"
+    },
+    {
+      "elapsed_seconds": 55.017,
+      "fps": 61.0,
+      "cook_ms": 2.1739001274108887,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "13",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 56.0,
+      "fps": 61.0,
+      "cook_ms": 1.978700041770935,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "02",
+      "phase": "MORPH"
+    },
+    {
+      "elapsed_seconds": 57.0,
+      "fps": 60.0,
+      "cook_ms": 2.1768999099731445,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "02",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 58.017,
+      "fps": 61.0,
+      "cook_ms": 1.9981000423431396,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "09",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 59.017,
+      "fps": 60.0,
+      "cook_ms": 2.2174999713897705,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "09",
+      "phase": "IDLE"
+    },
+    {
+      "elapsed_seconds": 60.017,
+      "fps": 61.0,
+      "cook_ms": 2.017400026321411,
+      "dropped_since_start": 0,
+      "absolute_frame_gaps_since_start": 0,
+      "effect": "15",
+      "phase": "IDLE"
+    }
+  ],
+  "measurement": {
+    "warmup_seconds": 2.0,
+    "source": "TouchDesigner Perform CHOP, sampled once per scheduled frame",
+    "fps": "Rolling rendered-frame count for the last second, reported by TouchDesigner",
+    "dropped_frames": "Sum of Perform CHOP drops since the preceding sample, excluding the first sample",
+    "absolute_timeline_frame_gaps": "Independent count of gaps between scheduled absolute frames",
+    "scope": "TouchDesigner process and current project load. Display refresh and physical presentation are outside this measurement."
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "stage": 2,
+  "touchdesigner": "2025.33230",
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "operators": 101,
+  "connections": 26,
+  "final_resolution": [
+    960,
+    540
+  ],
+  "shaders_passed": [
+    "DEMO",
+    "00",
+    "06",
+    "03",
+    "04",
+    "09",
+    "TRANSITION"
+  ],
+  "minimum_pairwise_rgb_delta": {
+    "00": 0.056738924235105515,
+    "06": 0.06159849464893341,
+    "03": 0.12867121398448944,
+    "04": 0.1620078980922699,
+    "09": 0.056738924235105515
+  },
+  "moving_demo_rgb_delta": {
+    "00": 0.03938053548336029,
+    "06": 0.04464161396026611,
+    "03": 0.03016621433198452,
+    "04": 0.02084413729608059,
+    "09": 0.061642516404390335
+  },
+  "transition_vs_destination_rgb_delta": 0.09469708800315857,
+  "operator_warnings": {}
+}

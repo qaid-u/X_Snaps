@@ -1,0 +1,2 @@
+# The core test suite uses the Python standard library.
+# Install requirements-gesture.txt to exercise device dependency imports and OSC wire tests.

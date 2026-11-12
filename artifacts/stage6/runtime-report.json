@@ -1,0 +1,56 @@
+{
+  "osc": {
+    "effect": "06",
+    "snap_count": 1,
+    "last_id": 123764640000000,
+    "last_error": "",
+    "socket_errors": "",
+    "localaddress": "127.0.0.1",
+    "received_rows": 3
+  },
+  "image": {
+    "source": 3,
+    "size": [
+      960,
+      540
+    ],
+    "message": "IMAGE\nKEYBOARD MODE\n\nD:\\Side_Projects\\X_Snaps\\artifacts"
+  },
+  "missing_video": {
+    "source": 0,
+    "message": "DEMO / SELECT A LOCAL VIDEO\nKEYBOARD MODE\n\nD:\\Side_Projects\\X_Snaps\\artifacts"
+  },
+  "low": {
+    "size": [
+      640,
+      360
+    ],
+    "target_fps": 30.0,
+    "message": "DEMO\nKEYBOARD MODE\n\nD:\\Side_Projects\\X_Snaps\\artifacts"
+  },
+  "screenshots": [
+    "SnapReality-20261112-000211-720380.png"
+  ],
+  "callback_errors": {},
+  "record_png": {
+    "frame_count": 13,
+    "sample": [
+      "SnapReality-20261112-000410-515002-.0.000000.png.png",
+      "SnapReality-20261112-000410-515002-.0.000001.png.png"
+    ],
+    "errors": ""
+  },
+  "record_mjpeg": {
+    "files": [
+      {
+        "file": "SnapReality-20261112-000410-963074.mov",
+        "bytes": 2437085
+      }
+    ],
+    "errors": ""
+  },
+  "video": {
+    "source": 2,
+    "errors": ""
+  }
+}

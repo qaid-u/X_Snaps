@@ -10,6 +10,8 @@ The separate MediaPipe worker ran against a synthetic camera in Chrome. Manual s
 
 Electron passed the synthetic two-window camera and control lifecycle test. The dedicated output stays active when controls close. See [desktop output results](reports/iterations/03-desktop-output.md) and the [OBS acceptance steps](docs/OBS_SETUP.md).
 
+The full GPU catalog passed shader readback and the comparable frame-time gate. Pass-through video now draws before the full catalog warms, and the catalog uses bounded GPU history for temporal effects. See [catalog results](reports/iterations/04-effect-catalog.md).
+
 ## 2026-11-11 — Windows discovery and Stage 2 checkpoint
 
 The workspace started without source files or Git metadata. The implementation plan was to establish the native DEMO → five effects → transition → Perform Mode path first, preserve that project, then add the tracker, catalog, performance controls and verification.

@@ -3,12 +3,13 @@ import type { Engine } from './Engine'
 export type Command =
   | { action: 'start'; device: string }
   | { action: 'stop' | 'next' | 'previous' }
-  | { action: 'effect' | 'strength' | 'sensitivity'; value: number }
+  | { action: 'effect' | 'strength' | 'amount' | 'sensitivity'; value: number }
   | { action: 'mirror' | 'cover' | 'tracking' | 'transition'; value: boolean }
   | { action: 'profile'; level: number; locked: boolean }
 
 export type DesktopState = {
   ready: boolean
+  playable: boolean
   camera: 'demo' | 'starting' | 'live'
   status: string
   devices: { id: string; label: string }[]

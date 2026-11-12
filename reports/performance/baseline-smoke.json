@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-11T23:47:41.831Z",
+  "at": "2026-11-12T00:12:32.839Z",
   "settings": {
     "fixture": "procedural-demo-v1",
     "mode": "smoke",
@@ -20,11 +20,11 @@
       "id": 0,
       "stats": {
         "render": {
-          "count": 27,
-          "mean": 33.47037037036865,
-          "p50": 35.89999999990687,
-          "p95": 36.60000000009313,
-          "p99": 37.10000000009313
+          "count": 26,
+          "mean": 30.799999999992835,
+          "p50": 30.5,
+          "p95": 36.6999999997206,
+          "p99": 36.89999999990687
         },
         "source": {
           "count": 0,
@@ -33,22 +33,22 @@
           "p95": null,
           "p99": null
         },
-        "renderFps": 29.87717162775411,
+        "renderFps": 32.46753246754002,
         "sourceFps": null,
         "longFrameRatio": 0,
         "cpu": {
-          "count": 28,
-          "mean": 0.17142857145518064,
-          "p50": 0.19999999995343387,
-          "p95": 0.30000000004656613,
-          "p99": 0.4000000001396984
+          "count": 27,
+          "mean": 0.2333333332746945,
+          "p50": 0.20000000018626451,
+          "p95": 0.40000000037252903,
+          "p99": 0.5
         },
         "gpu": {
-          "count": 28,
-          "mean": 0.035691428571428575,
-          "p50": 0.03584,
-          "p95": 0.039872,
-          "p99": 0.04096
+          "count": 26,
+          "mean": 0.23240861538461546,
+          "p50": 0.232448,
+          "p95": 0.23552,
+          "p99": 0.23552
         },
         "hand": {
           "count": 0,
@@ -59,33 +59,37 @@
         },
         "latency": {
           "count": 1,
-          "mean": 27.800000000046566,
-          "p50": 27.800000000046566,
-          "p95": 27.800000000046566,
-          "p99": 27.800000000046566
+          "mean": 152.3000000002794,
+          "p50": 152.3000000002794,
+          "p95": 152.3000000002794,
+          "p99": 152.3000000002794
         },
         "skippedInference": 0,
-        "warmupMs": 120.4000000001397,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
         "effect": 0,
         "width": 1280,
         "height": 720,
         "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
-        "programs": 1,
-        "textures": 1,
+        "programs": 2,
+        "textures": 5,
         "profile": "Balanced",
-        "reason": "Balanced selected"
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 0
       }
     },
     {
-      "label": "Comic Book",
-      "id": 2,
+      "label": "2D / 3D Style",
+      "id": 1,
       "stats": {
         "render": {
-          "count": 28,
-          "mean": 33.396428571423584,
-          "p50": 32.10000000009313,
-          "p95": 37,
-          "p99": 37.10000000009313
+          "count": 25,
+          "mean": 34.88800000000745,
+          "p50": 30.59999999962747,
+          "p95": 36.5,
+          "p99": 133.20000000018626
         },
         "source": {
           "count": 0,
@@ -94,21 +98,151 @@
           "p95": null,
           "p99": null
         },
-        "renderFps": 29.943321569890045,
+        "renderFps": 28.663150653513714,
+        "sourceFps": null,
+        "longFrameRatio": 0.04,
+        "cpu": {
+          "count": 26,
+          "mean": 0.21538461537028736,
+          "p50": 0.20000000018626451,
+          "p95": 0.39999999990686774,
+          "p99": 0.39999999990686774
+        },
+        "gpu": {
+          "count": 26,
+          "mean": 0.08262892307692307,
+          "p50": 0.0768,
+          "p95": 0.082944,
+          "p99": 0.231424
+        },
+        "hand": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "latency": {
+          "count": 1,
+          "mean": 16.700000000186265,
+          "p50": 16.700000000186265,
+          "p95": 16.700000000186265,
+          "p99": 16.700000000186265
+        },
+        "skippedInference": 0,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
+        "effect": 1,
+        "width": 1280,
+        "height": 720,
+        "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "programs": 2,
+        "textures": 5,
+        "profile": "Balanced",
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 0
+      }
+    },
+    {
+      "label": "Comic Book",
+      "id": 2,
+      "stats": {
+        "render": {
+          "count": 28,
+          "mean": 31.15714285713953,
+          "p50": 30.399999999906868,
+          "p95": 36.799999999813735,
+          "p99": 37
+        },
+        "source": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "renderFps": 32.09536909674804,
         "sourceFps": null,
         "longFrameRatio": 0,
         "cpu": {
           "count": 29,
-          "mean": 0.23103448279715819,
-          "p50": 0.19999999995343387,
-          "p95": 0.5,
-          "p99": 0.5
+          "mean": 0.1862068965163981,
+          "p50": 0.19999999972060323,
+          "p95": 0.3000000002793968,
+          "p99": 0.3000000002793968
+        },
+        "gpu": {
+          "count": 28,
+          "mean": 0.06875428571428573,
+          "p50": 0.068608,
+          "p95": 0.07168,
+          "p99": 0.077824
+        },
+        "hand": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "latency": {
+          "count": 1,
+          "mean": 75.70000000018626,
+          "p50": 75.70000000018626,
+          "p95": 75.70000000018626,
+          "p99": 75.70000000018626
+        },
+        "skippedInference": 0,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
+        "effect": 2,
+        "width": 1280,
+        "height": 720,
+        "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "programs": 2,
+        "textures": 5,
+        "profile": "Balanced",
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 0
+      }
+    },
+    {
+      "label": "Halftone Print",
+      "id": 3,
+      "stats": {
+        "render": {
+          "count": 28,
+          "mean": 33.339285714285715,
+          "p50": 30.899999999906868,
+          "p95": 36.60000000009313,
+          "p99": 36.700000000186265
+        },
+        "source": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "renderFps": 29.994643813604714,
+        "sourceFps": null,
+        "longFrameRatio": 0,
+        "cpu": {
+          "count": 29,
+          "mean": 0.21034482755730377,
+          "p50": 0.20000000018626451,
+          "p95": 0.3000000002793968,
+          "p99": 0.3000000002793968
         },
         "gpu": {
           "count": 29,
-          "mean": 0.061545931034482776,
-          "p50": 0.062464,
-          "p95": 0.064512,
+          "mean": 0.04374951724137932,
+          "p50": 0.043008,
+          "p95": 0.048128,
           "p99": 0.067584
         },
         "hand": {
@@ -120,33 +254,37 @@
         },
         "latency": {
           "count": 1,
-          "mean": 0.8000000000465661,
-          "p50": 0.8000000000465661,
-          "p95": 0.8000000000465661,
-          "p99": 0.8000000000465661
+          "mean": 18.5,
+          "p50": 18.5,
+          "p95": 18.5,
+          "p99": 18.5
         },
         "skippedInference": 0,
-        "warmupMs": 120.4000000001397,
-        "effect": 2,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
+        "effect": 3,
         "width": 1280,
         "height": 720,
         "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
-        "programs": 1,
-        "textures": 1,
+        "programs": 2,
+        "textures": 5,
         "profile": "Balanced",
-        "reason": "Balanced selected"
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 0
       }
     },
     {
-      "label": "Halftone Print",
-      "id": 3,
+      "label": "Cel Shading",
+      "id": 4,
       "stats": {
         "render": {
-          "count": 28,
-          "mean": 33.357142857142854,
-          "p50": 31.100000000093132,
-          "p95": 37.199999999953434,
-          "p99": 37.199999999953434
+          "count": 27,
+          "mean": 33.52222222222567,
+          "p50": 36,
+          "p95": 36.8000000002794,
+          "p99": 38.6999999997206
         },
         "source": {
           "count": 0,
@@ -155,22 +293,22 @@
           "p95": null,
           "p99": null
         },
-        "renderFps": 29.97858672376874,
+        "renderFps": 29.830957905200776,
         "sourceFps": null,
         "longFrameRatio": 0,
         "cpu": {
-          "count": 29,
-          "mean": 0.26896551726707096,
-          "p50": 0.20000000018626451,
-          "p95": 0.6000000000931323,
-          "p99": 0.6999999999534339
+          "count": 28,
+          "mean": 0.16071428571428573,
+          "p50": 0.19999999972060323,
+          "p95": 0.2999999998137355,
+          "p99": 0.2999999998137355
         },
         "gpu": {
-          "count": 29,
-          "mean": 0.0386648275862069,
-          "p50": 0.037888,
-          "p95": 0.038912,
-          "p99": 0.06144
+          "count": 28,
+          "mean": 0.0746422857142857,
+          "p50": 0.075776,
+          "p95": 0.0768,
+          "p99": 0.0768
         },
         "hand": {
           "count": 0,
@@ -181,21 +319,25 @@
         },
         "latency": {
           "count": 1,
-          "mean": 0.30000000004656613,
-          "p50": 0.30000000004656613,
-          "p95": 0.30000000004656613,
-          "p99": 0.30000000004656613
+          "mean": 24,
+          "p50": 24,
+          "p95": 24,
+          "p99": 24
         },
         "skippedInference": 0,
-        "warmupMs": 120.4000000001397,
-        "effect": 3,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
+        "effect": 4,
         "width": 1280,
         "height": 720,
         "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
-        "programs": 1,
-        "textures": 1,
+        "programs": 2,
+        "textures": 5,
         "profile": "Balanced",
-        "reason": "Balanced selected"
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 0
       }
     },
     {
@@ -204,10 +346,10 @@
       "stats": {
         "render": {
           "count": 27,
-          "mean": 33.188888888892336,
-          "p50": 31.199999999953434,
-          "p95": 37.4000000001397,
-          "p99": 37.4000000001397
+          "mean": 34.10740740740396,
+          "p50": 34.799999999813735,
+          "p95": 37.39999999990687,
+          "p99": 54.60000000009313
         },
         "source": {
           "count": 0,
@@ -216,22 +358,22 @@
           "p95": null,
           "p99": null
         },
-        "renderFps": 30.1305657850655,
+        "renderFps": 29.319144315346648,
         "sourceFps": null,
-        "longFrameRatio": 0,
+        "longFrameRatio": 0.037037037037037035,
         "cpu": {
           "count": 28,
-          "mean": 0.24285714288375207,
-          "p50": 0.20000000018626451,
-          "p95": 0.4000000001396984,
-          "p99": 0.4000000001396984
+          "mean": 0.2607142857575257,
+          "p50": 0.2999999998137355,
+          "p95": 0.39999999990686774,
+          "p99": 0.40000000037252903
         },
         "gpu": {
           "count": 28,
-          "mean": 0.03894857142857144,
-          "p50": 0.038912,
-          "p95": 0.044032,
-          "p99": 0.044032
+          "mean": 0.05394285714285716,
+          "p50": 0.053248,
+          "p95": 0.059392,
+          "p99": 0.075776
         },
         "hand": {
           "count": 0,
@@ -242,21 +384,220 @@
         },
         "latency": {
           "count": 1,
-          "mean": 33.299999999813735,
-          "p50": 33.299999999813735,
-          "p95": 33.299999999813735,
-          "p99": 33.299999999813735
+          "mean": 27.700000000186265,
+          "p50": 27.700000000186265,
+          "p95": 27.700000000186265,
+          "p99": 27.700000000186265
         },
         "skippedInference": 0,
-        "warmupMs": 120.4000000001397,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
         "effect": 5,
         "width": 1280,
         "height": 720,
         "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
-        "programs": 1,
-        "textures": 1,
+        "programs": 2,
+        "textures": 5,
         "profile": "Balanced",
-        "reason": "Balanced selected"
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 0
+      }
+    },
+    {
+      "label": "Kinetic Typography",
+      "id": 6,
+      "stats": {
+        "render": {
+          "count": 28,
+          "mean": 33.26428571428239,
+          "p50": 30.5,
+          "p95": 36.5,
+          "p99": 36.60000000009313
+        },
+        "source": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "renderFps": 30.062271848832726,
+        "sourceFps": null,
+        "longFrameRatio": 0,
+        "cpu": {
+          "count": 29,
+          "mean": 0.22413793108265462,
+          "p50": 0.20000000018626451,
+          "p95": 0.39999999990686774,
+          "p99": 0.39999999990686774
+        },
+        "gpu": {
+          "count": 29,
+          "mean": 0.06426482758620689,
+          "p50": 0.064512,
+          "p95": 0.06656,
+          "p99": 0.068608
+        },
+        "hand": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "latency": {
+          "count": 1,
+          "mean": 3.400000000372529,
+          "p50": 3.400000000372529,
+          "p95": 3.400000000372529,
+          "p99": 3.400000000372529
+        },
+        "skippedInference": 0,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
+        "effect": 6,
+        "width": 1280,
+        "height": 720,
+        "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "programs": 2,
+        "textures": 5,
+        "profile": "Balanced",
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 0
+      }
+    },
+    {
+      "label": "Speed Lines",
+      "id": 7,
+      "stats": {
+        "render": {
+          "count": 28,
+          "mean": 33.12142857142525,
+          "p50": 30.5,
+          "p95": 36.60000000009313,
+          "p99": 36.89999999990687
+        },
+        "source": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "renderFps": 30.19193444037396,
+        "sourceFps": null,
+        "longFrameRatio": 0,
+        "cpu": {
+          "count": 29,
+          "mean": 0.23793103449560446,
+          "p50": 0.20000000018626451,
+          "p95": 0.39999999990686774,
+          "p99": 0.39999999990686774
+        },
+        "gpu": {
+          "count": 29,
+          "mean": 0.06666593103448278,
+          "p50": 0.06656,
+          "p95": 0.068608,
+          "p99": 0.073728
+        },
+        "hand": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "latency": {
+          "count": 1,
+          "mean": 9.600000000093132,
+          "p50": 9.600000000093132,
+          "p95": 9.600000000093132,
+          "p99": 9.600000000093132
+        },
+        "skippedInference": 0,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
+        "effect": 7,
+        "width": 1280,
+        "height": 720,
+        "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "programs": 2,
+        "textures": 5,
+        "profile": "Balanced",
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 0
+      }
+    },
+    {
+      "label": "Radial Zoom Blur",
+      "id": 8,
+      "stats": {
+        "render": {
+          "count": 28,
+          "mean": 33.33571428572759,
+          "p50": 31.600000000093132,
+          "p95": 36.700000000186265,
+          "p99": 37
+        },
+        "source": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "renderFps": 29.997857295895464,
+        "sourceFps": null,
+        "longFrameRatio": 0,
+        "cpu": {
+          "count": 29,
+          "mean": 0.19310344821484438,
+          "p50": 0.19999999972060323,
+          "p95": 0.39999999990686774,
+          "p99": 0.5
+        },
+        "gpu": {
+          "count": 29,
+          "mean": 0.19148800000000005,
+          "p50": 0.195584,
+          "p95": 0.198656,
+          "p99": 0.201728
+        },
+        "hand": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "latency": {
+          "count": 1,
+          "mean": 5.7999999998137355,
+          "p50": 5.7999999998137355,
+          "p95": 5.7999999998137355,
+          "p99": 5.7999999998137355
+        },
+        "skippedInference": 0,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
+        "effect": 8,
+        "width": 1280,
+        "height": 720,
+        "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "programs": 2,
+        "textures": 5,
+        "profile": "Balanced",
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 0
       }
     },
     {
@@ -265,10 +606,10 @@
       "stats": {
         "render": {
           "count": 28,
-          "mean": 33.346428571426905,
-          "p50": 31.300000000046566,
-          "p95": 36.700000000186265,
-          "p99": 37.5999999998603
+          "mean": 33.246428571441875,
+          "p50": 30.899999999906868,
+          "p95": 36.799999999813735,
+          "p99": 37.8000000002794
         },
         "source": {
           "count": 0,
@@ -277,22 +618,22 @@
           "p95": null,
           "p99": null
         },
-        "renderFps": 29.98821891399957,
+        "renderFps": 30.07841873454592,
         "sourceFps": null,
         "longFrameRatio": 0,
         "cpu": {
           "count": 29,
-          "mean": 0.24137931029665574,
-          "p50": 0.19999999995343387,
-          "p95": 0.5,
-          "p99": 0.6000000000931323
+          "mean": 0.21034482757336107,
+          "p50": 0.20000000018626451,
+          "p95": 0.3000000002793968,
+          "p99": 0.5
         },
         "gpu": {
           "count": 29,
-          "mean": 0.05398951724137934,
-          "p50": 0.054272,
-          "p95": 0.05632,
-          "p99": 0.05632
+          "mean": 0.21959503448275863,
+          "p50": 0.22016,
+          "p95": 0.223232,
+          "p99": 0.22528
         },
         "hand": {
           "count": 0,
@@ -303,32 +644,36 @@
         },
         "latency": {
           "count": 1,
-          "mean": 5.900000000139698,
-          "p50": 5.900000000139698,
-          "p95": 5.900000000139698,
-          "p99": 5.900000000139698
+          "mean": 10.199999999720603,
+          "p50": 10.199999999720603,
+          "p95": 10.199999999720603,
+          "p99": 10.199999999720603
         },
         "skippedInference": 0,
-        "warmupMs": 120.4000000001397,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
         "effect": 9,
         "width": 1280,
         "height": 720,
         "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
-        "programs": 1,
-        "textures": 1,
+        "programs": 2,
+        "textures": 5,
         "profile": "Balanced",
-        "reason": "Balanced selected"
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 0
       }
     },
     {
-      "label": "Color Remapping",
-      "id": 16,
+      "label": "Frame Echo",
+      "id": 10,
       "stats": {
         "render": {
           "count": 28,
-          "mean": 33.33214285714452,
-          "p50": 31.0999999998603,
-          "p95": 37.199999999953434,
+          "mean": 33.32142857142857,
+          "p50": 32.700000000186265,
+          "p95": 36.5,
           "p99": 37.39999999990687
         },
         "source": {
@@ -338,22 +683,22 @@
           "p95": null,
           "p99": null
         },
-        "renderFps": 30.001071466836606,
+        "renderFps": 30.010718113612008,
         "sourceFps": null,
         "longFrameRatio": 0,
         "cpu": {
           "count": 29,
-          "mean": 0.25517241378989197,
+          "mean": 0.3000000000224802,
           "p50": 0.2999999998137355,
-          "p95": 0.4000000001396984,
-          "p99": 0.4000000001396984
+          "p95": 0.7000000001862645,
+          "p99": 0.7000000001862645
         },
         "gpu": {
           "count": 29,
-          "mean": 0.03605186206896551,
-          "p50": 0.03584,
-          "p95": 0.036864,
-          "p99": 0.054272
+          "mean": 0.21122648275862066,
+          "p50": 0.205824,
+          "p95": 0.231424,
+          "p99": 0.24064
         },
         "hand": {
           "count": 0,
@@ -364,31 +709,685 @@
         },
         "latency": {
           "count": 1,
-          "mean": 2.699999999953434,
-          "p50": 2.699999999953434,
-          "p95": 2.699999999953434,
-          "p99": 2.699999999953434
+          "mean": 3.7000000001862645,
+          "p50": 3.7000000001862645,
+          "p95": 3.7000000001862645,
+          "p99": 3.7000000001862645
         },
         "skippedInference": 0,
-        "warmupMs": 120.4000000001397,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
+        "effect": 10,
+        "width": 1280,
+        "height": 720,
+        "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "programs": 2,
+        "textures": 5,
+        "profile": "Balanced",
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 2
+      }
+    },
+    {
+      "label": "Ink Splash",
+      "id": 11,
+      "stats": {
+        "render": {
+          "count": 28,
+          "mean": 33.53928571428904,
+          "p50": 34.700000000186265,
+          "p95": 36.5,
+          "p99": 36.700000000186265
+        },
+        "source": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "renderFps": 29.81578106697606,
+        "sourceFps": null,
+        "longFrameRatio": 0,
+        "cpu": {
+          "count": 29,
+          "mean": 0.19655172411223937,
+          "p50": 0.19999999972060323,
+          "p95": 0.2999999998137355,
+          "p99": 1
+        },
+        "gpu": {
+          "count": 29,
+          "mean": 0.20557682758620685,
+          "p50": 0.205824,
+          "p95": 0.207872,
+          "p99": 0.208896
+        },
+        "hand": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "latency": {
+          "count": 1,
+          "mean": 4,
+          "p50": 4,
+          "p95": 4,
+          "p99": 4
+        },
+        "skippedInference": 0,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
+        "effect": 11,
+        "width": 1280,
+        "height": 720,
+        "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "programs": 2,
+        "textures": 5,
+        "profile": "Balanced",
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 2
+      }
+    },
+    {
+      "label": "Impact Frame",
+      "id": 12,
+      "stats": {
+        "render": {
+          "count": 28,
+          "mean": 33.34285714286047,
+          "p50": 31,
+          "p95": 36.40000000037253,
+          "p99": 36.5
+        },
+        "source": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "renderFps": 29.991431019705665,
+        "sourceFps": null,
+        "longFrameRatio": 0,
+        "cpu": {
+          "count": 29,
+          "mean": 0.1482758620625426,
+          "p50": 0.19999999972060323,
+          "p95": 0.20000000018626451,
+          "p99": 0.20000000018626451
+        },
+        "gpu": {
+          "count": 29,
+          "mean": 0.20469406896551717,
+          "p50": 0.2048,
+          "p95": 0.207872,
+          "p99": 0.20992
+        },
+        "hand": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "latency": {
+          "count": 1,
+          "mean": 8.199999999720603,
+          "p50": 8.199999999720603,
+          "p95": 8.199999999720603,
+          "p99": 8.199999999720603
+        },
+        "skippedInference": 0,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
+        "effect": 12,
+        "width": 1280,
+        "height": 720,
+        "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "programs": 2,
+        "textures": 5,
+        "profile": "Balanced",
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 2
+      }
+    },
+    {
+      "label": "Prismatic Fracture",
+      "id": 13,
+      "stats": {
+        "render": {
+          "count": 28,
+          "mean": 33.15000000000665,
+          "p50": 30.899999999906868,
+          "p95": 36.89999999990687,
+          "p99": 37.5
+        },
+        "source": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "renderFps": 30.165912518847644,
+        "sourceFps": null,
+        "longFrameRatio": 0,
+        "cpu": {
+          "count": 29,
+          "mean": 0.17931034486612368,
+          "p50": 0.10000000009313226,
+          "p95": 0.39999999990686774,
+          "p99": 0.5
+        },
+        "gpu": {
+          "count": 29,
+          "mean": 0.24604248275862073,
+          "p50": 0.24576,
+          "p95": 0.256,
+          "p99": 0.256
+        },
+        "hand": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "latency": {
+          "count": 1,
+          "mean": 13.5,
+          "p50": 13.5,
+          "p95": 13.5,
+          "p99": 13.5
+        },
+        "skippedInference": 0,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
+        "effect": 13,
+        "width": 1280,
+        "height": 720,
+        "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "programs": 2,
+        "textures": 5,
+        "profile": "Balanced",
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 2
+      }
+    },
+    {
+      "label": "Geometric Shatter",
+      "id": 14,
+      "stats": {
+        "render": {
+          "count": 28,
+          "mean": 33.33571428571096,
+          "p50": 30.90000000037253,
+          "p95": 36.799999999813735,
+          "p99": 37.89999999990687
+        },
+        "source": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "renderFps": 29.997857295910432,
+        "sourceFps": null,
+        "longFrameRatio": 0,
+        "cpu": {
+          "count": 29,
+          "mean": 0.14827586214282903,
+          "p50": 0.10000000009313226,
+          "p95": 0.3000000002793968,
+          "p99": 0.40000000037252903
+        },
+        "gpu": {
+          "count": 29,
+          "mean": 0.24311172413793108,
+          "p50": 0.241664,
+          "p95": 0.248832,
+          "p99": 0.254976
+        },
+        "hand": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "latency": {
+          "count": 1,
+          "mean": 11.899999999906868,
+          "p50": 11.899999999906868,
+          "p95": 11.899999999906868,
+          "p99": 11.899999999906868
+        },
+        "skippedInference": 0,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
+        "effect": 14,
+        "width": 1280,
+        "height": 720,
+        "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "programs": 2,
+        "textures": 5,
+        "profile": "Balanced",
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 2
+      }
+    },
+    {
+      "label": "Neon Energy Trails",
+      "id": 15,
+      "stats": {
+        "render": {
+          "count": 28,
+          "mean": 33.332142857136205,
+          "p50": 32.09999999962747,
+          "p95": 36.799999999813735,
+          "p99": 37.6999999997206
+        },
+        "source": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "renderFps": 30.00107146684409,
+        "sourceFps": null,
+        "longFrameRatio": 0,
+        "cpu": {
+          "count": 29,
+          "mean": 0.19310344824695896,
+          "p50": 0.19999999972060323,
+          "p95": 0.3000000002793968,
+          "p99": 0.3000000002793968
+        },
+        "gpu": {
+          "count": 29,
+          "mean": 0.28311834482758613,
+          "p50": 0.279552,
+          "p95": 0.300032,
+          "p99": 0.301056
+        },
+        "hand": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "latency": {
+          "count": 1,
+          "mean": 16.200000000186265,
+          "p50": 16.200000000186265,
+          "p95": 16.200000000186265,
+          "p99": 16.200000000186265
+        },
+        "skippedInference": 0,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
+        "effect": 15,
+        "width": 1280,
+        "height": 720,
+        "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "programs": 2,
+        "textures": 5,
+        "profile": "Balanced",
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 2
+      }
+    },
+    {
+      "label": "Color Remapping",
+      "id": 16,
+      "stats": {
+        "render": {
+          "count": 28,
+          "mean": 33.30714285714618,
+          "p50": 30.699999999720603,
+          "p95": 36.700000000186265,
+          "p99": 36.90000000037253
+        },
+        "source": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "renderFps": 30.023589963539788,
+        "sourceFps": null,
+        "longFrameRatio": 0,
+        "cpu": {
+          "count": 29,
+          "mean": 0.10000000001284583,
+          "p50": 0.10000000009313226,
+          "p95": 0.20000000018626451,
+          "p99": 0.20000000018626451
+        },
+        "gpu": {
+          "count": 29,
+          "mean": 0.22340855172413795,
+          "p50": 0.221184,
+          "p95": 0.226304,
+          "p99": 0.2816
+        },
+        "hand": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "latency": {
+          "count": 1,
+          "mean": 21.799999999813735,
+          "p50": 21.799999999813735,
+          "p95": 21.799999999813735,
+          "p99": 21.799999999813735
+        },
+        "skippedInference": 0,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
         "effect": 16,
         "width": 1280,
         "height": 720,
         "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
-        "programs": 1,
-        "textures": 1,
+        "programs": 2,
+        "textures": 5,
         "profile": "Balanced",
-        "reason": "Balanced selected"
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 2
+      }
+    },
+    {
+      "label": "Vortex Portal",
+      "id": 17,
+      "stats": {
+        "render": {
+          "count": 27,
+          "mean": 33.448148148151596,
+          "p50": 36.1999999997206,
+          "p95": 36.799999999813735,
+          "p99": 36.89999999990687
+        },
+        "source": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "renderFps": 29.897021370830714,
+        "sourceFps": null,
+        "longFrameRatio": 0,
+        "cpu": {
+          "count": 28,
+          "mean": 0.157142857139531,
+          "p50": 0.10000000009313226,
+          "p95": 0.2999999998137355,
+          "p99": 0.2999999998137355
+        },
+        "gpu": {
+          "count": 28,
+          "mean": 0.23976228571428573,
+          "p50": 0.242688,
+          "p95": 0.246784,
+          "p99": 0.248832
+        },
+        "hand": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "latency": {
+          "count": 1,
+          "mean": 21.899999999906868,
+          "p50": 21.899999999906868,
+          "p95": 21.899999999906868,
+          "p99": 21.899999999906868
+        },
+        "skippedInference": 0,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
+        "effect": 17,
+        "width": 1280,
+        "height": 720,
+        "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "programs": 2,
+        "textures": 5,
+        "profile": "Balanced",
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 2
+      }
+    },
+    {
+      "label": "Synthwave Grid",
+      "id": 18,
+      "stats": {
+        "render": {
+          "count": 27,
+          "mean": 33.43333333334023,
+          "p50": 36,
+          "p95": 36.60000000009313,
+          "p99": 36.6999999997206
+        },
+        "source": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "renderFps": 29.910269192416564,
+        "sourceFps": null,
+        "longFrameRatio": 0,
+        "cpu": {
+          "count": 28,
+          "mean": 0.13571428570763341,
+          "p50": 0.10000000009313226,
+          "p95": 0.2999999998137355,
+          "p99": 0.3000000002793968
+        },
+        "gpu": {
+          "count": 28,
+          "mean": 0.1794194285714285,
+          "p50": 0.1792,
+          "p95": 0.18432,
+          "p99": 0.192512
+        },
+        "hand": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "latency": {
+          "count": 1,
+          "mean": 35.89999999990687,
+          "p50": 35.89999999990687,
+          "p95": 35.89999999990687,
+          "p99": 35.89999999990687
+        },
+        "skippedInference": 0,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
+        "effect": 18,
+        "width": 1280,
+        "height": 720,
+        "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "programs": 2,
+        "textures": 5,
+        "profile": "Balanced",
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 2
+      }
+    },
+    {
+      "label": "Comic Starburst",
+      "id": 19,
+      "stats": {
+        "render": {
+          "count": 28,
+          "mean": 33.34285714284384,
+          "p50": 30.799999999813735,
+          "p95": 36.700000000186265,
+          "p99": 37.39999999990687
+        },
+        "source": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "renderFps": 29.99143101972062,
+        "sourceFps": null,
+        "longFrameRatio": 0,
+        "cpu": {
+          "count": 29,
+          "mean": 0.1413793103801536,
+          "p50": 0.10000000009313226,
+          "p95": 0.20000000018626451,
+          "p99": 0.20000000018626451
+        },
+        "gpu": {
+          "count": 29,
+          "mean": 0.20109241379310341,
+          "p50": 0.190464,
+          "p95": 0.24576,
+          "p99": 0.24576
+        },
+        "hand": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "latency": {
+          "count": 1,
+          "mean": 4.2000000001862645,
+          "p50": 4.2000000001862645,
+          "p95": 4.2000000001862645,
+          "p99": 4.2000000001862645
+        },
+        "skippedInference": 0,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
+        "effect": 19,
+        "width": 1280,
+        "height": 720,
+        "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "programs": 2,
+        "textures": 5,
+        "profile": "Balanced",
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 2
+      }
+    },
+    {
+      "label": "Mixed Media",
+      "id": 20,
+      "stats": {
+        "render": {
+          "count": 28,
+          "mean": 33.339285714285715,
+          "p50": 31.5,
+          "p95": 36.5,
+          "p99": 36.6999999997206
+        },
+        "source": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "renderFps": 29.994643813604714,
+        "sourceFps": null,
+        "longFrameRatio": 0,
+        "cpu": {
+          "count": 29,
+          "mean": 0.1206896551724138,
+          "p50": 0.10000000009313226,
+          "p95": 0.3000000002793968,
+          "p99": 0.39999999990686774
+        },
+        "gpu": {
+          "count": 29,
+          "mean": 0.2742554482758621,
+          "p50": 0.275456,
+          "p95": 0.277504,
+          "p99": 0.277504
+        },
+        "hand": {
+          "count": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "latency": {
+          "count": 1,
+          "mean": 8.600000000093132,
+          "p50": 8.600000000093132,
+          "p95": 8.600000000093132,
+          "p99": 8.600000000093132
+        },
+        "skippedInference": 0,
+        "initialMs": 46.39999999990687,
+        "warmupMs": 4263.700000000186,
+        "effect": 20,
+        "width": 1280,
+        "height": 720,
+        "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "programs": 2,
+        "textures": 5,
+        "profile": "Balanced",
+        "reason": "Balanced selected",
+        "handStatus": "Hand tracking off",
+        "effectAmount": 0.5,
+        "historyFrames": 2
       }
     }
   ],
   "stress": {
     "render": {
-      "count": 34,
-      "mean": 33.35294117647059,
-      "p50": 31.199999999953434,
-      "p95": 37.800000000046566,
-      "p99": 41.89999999990687
+      "count": 121,
+      "mean": 33.360330578513164,
+      "p50": 31.100000000093132,
+      "p95": 37.39999999990687,
+      "p99": 40.3000000002794
     },
     "source": {
       "count": 0,
@@ -397,22 +1396,22 @@
       "p95": null,
       "p99": null
     },
-    "renderFps": 29.98236331569665,
+    "renderFps": 29.97572214239638,
     "sourceFps": null,
-    "longFrameRatio": 0,
+    "longFrameRatio": 0.008264462809917356,
     "cpu": {
-      "count": 35,
-      "mean": 0.2371428571441876,
-      "p50": 0.19999999995343387,
-      "p95": 0.4000000001396984,
-      "p99": 0.5999999998603016
+      "count": 122,
+      "mean": 0.1459016393694538,
+      "p50": 0.10000000009313226,
+      "p95": 0.2999999998137355,
+      "p99": 0.39999999990686774
     },
     "gpu": {
-      "count": 35,
-      "mean": 0.043885714285714285,
-      "p50": 0.037888,
-      "p95": 0.062464,
-      "p99": 0.063488
+      "count": 121,
+      "mean": 0.17674578512396694,
+      "p50": 0.21504,
+      "p95": 0.27648,
+      "p99": 0.300032
     },
     "hand": {
       "count": 0,
@@ -422,22 +1421,28 @@
       "p99": null
     },
     "latency": {
-      "count": 12,
-      "mean": 16.47499999999612,
-      "p50": 13.100000000093132,
-      "p95": 35.5,
-      "p99": 35.5
+      "count": 42,
+      "mean": 16.611904761909198,
+      "p50": 14.199999999720603,
+      "p95": 30.399999999906868,
+      "p99": 37.6999999997206
     },
     "skippedInference": 0,
-    "warmupMs": 120.4000000001397,
-    "effect": 16,
+    "initialMs": 46.39999999990687,
+    "warmupMs": 4263.700000000186,
+    "effect": 20,
     "width": 1280,
     "height": 720,
     "gpuName": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 vs_5_0 ps_5_0, D3D11)",
-    "programs": 1,
-    "textures": 1,
+    "programs": 2,
+    "textures": 5,
     "profile": "Balanced",
-    "reason": "Balanced selected"
+    "reason": "Balanced selected",
+    "handStatus": "Hand tracking off",
+    "effectAmount": 0.5,
+    "historyFrames": 1
   },
-  "errors": []
+  "errors": [],
+  "comparison": "Comparable baseline",
+  "regression": []
 }

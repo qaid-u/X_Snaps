@@ -1,13 +1,16 @@
 import { _electron as electron, expect, test } from '@playwright/test'
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { createRequire } from 'node:module'
+
+const require = createRequire(import.meta.url)
 
 test('native output owns camera and renderer while controls can close and reopen', async () => {
   const packaged = process.env.SNAP_PACKAGED_EXE
   const fakeMedia = ['--use-fake-device-for-media-stream', '--enable-unsafe-swiftshader']
   const app = await electron.launch(packaged
     ? { executablePath: resolve(packaged), args: fakeMedia }
-    : { args: ['.', ...fakeMedia] })
+    : { executablePath: require('electron') as string, args: [resolve('.'), ...fakeMedia] })
   try {
     await expect.poll(() => app.windows().length).toBe(2)
     const pages = app.windows()
@@ -34,7 +37,7 @@ test('native output owns camera and renderer while controls can close and reopen
       await expect(control.getByText('Show thumb and middle finger')).toBeVisible()
     }
     await control.getByRole('button', { name: 'Next effect' }).click()
-    await expect(control.getByRole('button', { name: '02 Comic Book' })).toHaveAttribute('aria-pressed', 'true')
+    await expect(control.getByRole('button', { name: '01 2D / 3D Style' })).toHaveAttribute('aria-pressed', 'true')
     await control.close()
     await expect(outputPage.locator('canvas')).toHaveCount(1)
     await outputPage.keyboard.press('Space')

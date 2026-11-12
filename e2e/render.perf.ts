@@ -51,15 +51,19 @@ test('animated GPU fixture meets its compatible performance baseline', async ({ 
   const comparable = !!baseline && JSON.stringify(baseline.settings) === JSON.stringify(settings)
   const regression: string[] = []
   if (comparable && !adopt) {
+    const sameCarousel = JSON.stringify(baseline.rows.map(row => row.id)) === JSON.stringify(rows.map(row => row.id))
     for (const row of [...rows, { label: 'Carousel stress', id: -1, stats: stress }]) {
-      const prior = row.id === -1 ? baseline.stress : baseline.rows.find(old => old.id === row.id)?.stats
+      const prior = row.id === -1 ? sameCarousel && baseline.stress : baseline.rows.find(old => old.id === row.id)?.stats
       if (!prior) continue
       const p95 = row.stats.render.p95 ?? Infinity
       const priorP95 = prior.render.p95 ?? Infinity
       if (p95 > priorP95 * 1.10) regression.push(`${row.label}: interval p95 ${p95.toFixed(1)} vs ${priorP95.toFixed(1)} ms`)
       if (row.stats.longFrameRatio > prior.longFrameRatio + .10) regression.push(`${row.label}: long frame ratio increased by >10 percentage points`)
-      if (row.stats.programs !== prior.programs) regression.push(`${row.label}: shader program count changed`)
     }
+    const oldPreview = baseline.rows[0].stats.initialMs ?? baseline.rows[0].stats.warmupMs
+    if (rows[0].stats.initialMs > Math.max(oldPreview * 2, oldPreview + 150)) regression.push('First playable frame exceeded startup tolerance')
+    const oldWarmup = baseline.rows[0].stats.warmupMs
+    if (sameCarousel && rows[0].stats.warmupMs > Math.max(oldWarmup * 2, oldWarmup + 150)) regression.push('Catalog warm-up exceeded baseline tolerance')
   }
   const comparison = adopt ? 'Baseline requested' : comparable ? 'Comparable baseline' : 'No compatible baseline'
   const path = `${reportDir}/run-${Date.now()}-${settings.mode}`
@@ -70,7 +74,7 @@ test('animated GPU fixture meets its compatible performance baseline', async ({ 
     table.push(`| ${label} | ${[stats.renderFps, stats.render.p95, stats.cpu.p95, stats.gpu.p95, stats.latency.p95].map(value => value?.toFixed(2) ?? '—').join(' | ')} |`)
   }
   await writeFile(path + '.md', ['# Animated render benchmark', '', settings.gpu, '',
-    `Shader warm-up ${rows[0].stats.warmupMs.toFixed(1)} ms. ${comparison}.`, '', ...table, '', ...regression, ''].join('\n'))
+    `First draw ${rows[0].stats.initialMs.toFixed(1)} ms. Full catalog warm-up ${rows[0].stats.warmupMs.toFixed(1)} ms. ${comparison}.`, '', ...table, '', ...regression, ''].join('\n'))
   for (const old of (await readdir(reportDir)).filter(name => /^run-\d+-(smoke|full)\.(json|md)$/.test(name)).sort().slice(0, -20)) {
     await rm(`${reportDir}/${old}`)
   }
@@ -79,7 +83,11 @@ test('animated GPU fixture meets its compatible performance baseline', async ({ 
   expect(regression).toEqual([])
   for (const { stats } of rows) {
     expect(stats.render.count).toBeGreaterThan(4)
-    expect(stats.programs).toBe(1)
+    expect(stats.programs).toBe(rows[0].stats.programs)
+    expect(stats.textures).toBe(rows[0].stats.textures)
   }
+  expect(stress.programs).toBe(rows[0].stats.programs)
+  expect(stress.textures).toBe(rows[0].stats.textures)
+  expect(stress.latency.p95 ?? Infinity).toBeLessThanOrEqual(100)
   if (adopt) await writeFile(baseFile, JSON.stringify(report, null, 2) + '\n')
 })

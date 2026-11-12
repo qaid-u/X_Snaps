@@ -25,6 +25,8 @@ h1, h2 { font-size: .8rem; color: #a8b7b9; margin: 0 0 1rem; }
 .catalog button { display: flex; align-items: center; gap: .8rem; width: 100%; text-align: left; margin: .35rem 0; }
 .catalog button[aria-pressed="true"] { background: #1f3735; border-color: #6ad5c6; color: #b9fff4; }
 .catalog button span { color: #8fa5a8; font-family: monospace; }
+.catalog input[type="search"] { width: 100%; color: inherit; background: #1a2024; border: 1px solid #30393e; border-radius: 6px; padding: .55rem; }
+.effect-list { max-height: max(280px, calc(100dvh - 260px)); overflow-y: auto; padding: 3px; }
 .controls label { display: grid; gap: .4rem; margin: .75rem 0; font-size: .82rem; }
 .controls .check { display: flex; align-items: center; }
 .controls select { min-width: 0; width: 100%; }
@@ -48,7 +50,6 @@ h1, h2 { font-size: .8rem; color: #a8b7b9; margin: 0 0 1rem; }
 @media (max-width: 570px) {
   .app { display: block; }
   header, footer, .top-actions { flex-wrap: wrap; }
-  .catalog { display: flex; overflow: auto; align-items: center; gap: .4rem; }
-  .catalog h1 { margin: 0; }
-  .catalog button { width: auto; white-space: nowrap; }
+  .effect-list { display: flex; overflow: auto; align-items: center; gap: .4rem; }
+  .effect-list button { width: auto; white-space: nowrap; }
 }

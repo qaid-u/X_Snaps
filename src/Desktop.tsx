@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Engine } from './Engine'
 import { effects } from './effects'
+import { EffectCatalog } from './EffectCatalog'
 import { profiles } from './performance'
 import type { Command, DesktopState } from './desktop-protocol'
 
@@ -12,13 +13,14 @@ export function DesktopOutput() {
     let message = 'Preparing effects…'
     let camera: DesktopState['camera'] = 'demo'
     let ready = false
+    let playable = false
     let active = true
     let lastSequence = 0
     let devices: DesktopState['devices'] = []
     let instance: Engine
     const publish = () => {
       if (!active) return
-      bridge.publish({ ready, camera, status: message, devices, available: true, metrics: instance?.snapshot() })
+      bridge.publish({ ready, playable, camera, status: message, devices, available: true, metrics: instance?.snapshot() })
     }
     try {
       instance = new Engine(canvas.current!, status => { message = status; publish() })
@@ -32,9 +34,13 @@ export function DesktopOutput() {
       devices = list.filter(item => item.kind === 'videoinput' && item.deviceId && !/OBS Virtual Camera/i.test(item.label))
         .map((item, index) => ({ id: item.deviceId, label: item.label || `Camera ${index + 1}` }))
     }
+    void instance.playable.then(() => {
+      playable = true
+      publish()
+    }).catch(() => {})
     void instance.ready.then(async () => {
       ready = true
-      message = 'Demo ready'
+      if (message.startsWith('Preparing')) message = 'Demo ready'
       publish()
       await refreshDevices()
       publish()
@@ -56,7 +62,7 @@ export function DesktopOutput() {
       publish()
     }
     const receive = bridge.onCommand((command, seq) => {
-      if (seq <= lastSequence || !ready) return
+      if (seq <= lastSequence || (!ready && command.action !== 'start' && command.action !== 'stop')) return
       lastSequence = seq
       switch (command.action) {
         case 'start': void start(command.device); break
@@ -73,6 +79,7 @@ export function DesktopOutput() {
         case 'cover': instance.cover = command.value; break
         case 'tracking': instance.setTracking(command.value); break
         case 'strength': instance.setStrength(command.value); break
+        case 'amount': instance.setAmount(command.value); break
         case 'sensitivity': instance.hands.sensitivity = command.value; break
         case 'transition': instance.transition = command.value; break
         case 'profile': instance.setProfile(command.level, command.locked); break
@@ -137,24 +144,19 @@ export function DesktopControl() {
       <button type="button" onClick={() => { void bridge?.showOutput() }} disabled={!state?.available}>Show OBS output</button>
     </header>
     <div className="desktop-grid">
-      <aside className="catalog" aria-label="Effects">
-        <h1>Effects</h1>
-        {effects.map(effect => <button key={effect.id} type="button" disabled={!usable}
-          aria-pressed={effect.id === metrics?.effect} onClick={() => run({ action: 'effect', value: effect.id })}>
-          <span>{String(effect.id).padStart(2, '0')}</span>{effect.label}
-        </button>)}
+      <EffectCatalog selected={metrics?.effect} disabled={!usable} choose={value => run({ action: 'effect', value })}>
         <div className="transport">
           <button type="button" disabled={!usable} onClick={() => run({ action: 'previous' })}>Previous</button>
           <button type="button" disabled={!usable} onClick={() => run({ action: 'next' })}>Next effect</button>
         </div>
-      </aside>
+      </EffectCatalog>
       <aside className="controls" aria-label="Controls">
         <h2>Video input</h2>
         <label>Camera<select disabled={live || waiting} value={device} onChange={event => setDevice(event.target.value)}>
           <option value="">System default</option>
           {state?.devices.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}
         </select></label>
-        <button type="button" className="primary" disabled={!usable || waiting}
+        <button type="button" className="primary" disabled={!state?.playable || waiting}
           onClick={() => run(live ? { action: 'stop' } : { action: 'start', device })}>{live ? 'Stop camera' : 'Start camera'}</button>
         <label className="check"><input type="checkbox" onChange={event => run({ action: 'mirror', value: event.target.checked })} />Mirror output</label>
         <label className="check"><input type="checkbox" onChange={event => run({ action: 'cover', value: event.target.checked })} />Fill frame</label>
@@ -175,6 +177,9 @@ export function DesktopControl() {
         }} />Lock quality</label>
         <label>Effect strength<input type="range" min="0" max="1" step=".01" defaultValue="1"
           onChange={event => run({ action: 'strength', value: event.target.valueAsNumber })} /></label>
+        {!!metrics?.effect && <label>{effects[metrics.effect].control}<input type="range" key={metrics.effect}
+          min="0" max="1" step=".01" defaultValue={metrics.effectAmount}
+          onChange={event => run({ action: 'amount', value: event.target.valueAsNumber })} /></label>}
         <label className="check"><input type="checkbox" defaultChecked onChange={event => run({ action: 'transition', value: event.target.checked })} />Transition</label>
         <div className="stats">
           <p>{metrics?.width ?? '—'} × {metrics?.height ?? '—'} · {metrics?.profile} · {metrics?.reason}</p>

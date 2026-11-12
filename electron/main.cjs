@@ -52,7 +52,7 @@ function createWindows() {
   output.setAspectRatio(16 / 9)
   output.on('closed', () => {
     output = null
-    state = { ready: false, available: false, camera: 'demo', devices: [], status: 'Output closed. Restart SNAP//REALITY to reopen it.' }
+    state = { ready: false, playable: false, available: false, camera: 'demo', devices: [], status: 'Output closed. Restart SNAP//REALITY to reopen it.' }
     control?.webContents.send('snap:state', state)
   })
   showControl()
@@ -70,7 +70,7 @@ function accepted(command) {
     case 'stop': case 'next': case 'previous': return true
     case 'effect': return Number.isInteger(command.value) && command.value >= 0 && command.value <= 20
     case 'profile': return [0, 1, 2].includes(command.level) && typeof command.locked === 'boolean'
-    case 'strength': case 'sensitivity': return Number.isFinite(command.value) && command.value >= 0 && command.value <= 1
+    case 'strength': case 'amount': case 'sensitivity': return Number.isFinite(command.value) && command.value >= 0 && command.value <= 1
     case 'mirror': case 'cover': case 'tracking': case 'transition': return typeof command.value === 'boolean'
     default: return false
   }
@@ -103,7 +103,9 @@ app.whenReady().then(() => {
     control?.webContents.send('snap:state', state)
   })
   ipcMain.handle('snap:command', (event, command) => {
-    if (!from(event, control) || !output || !state?.ready || !accepted(command)) return false
+    if (!from(event, control) || !output || !accepted(command)) return false
+    const mediaCommand = command.action === 'start' || command.action === 'stop'
+    if (!(mediaCommand ? state?.playable : state?.ready)) return false
     output.webContents.send('snap:apply', command, ++sequence)
     return true
   })

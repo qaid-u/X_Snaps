@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Engine, outputTitle } from './Engine'
 import { effects } from './effects'
+import { EffectCatalog } from './EffectCatalog'
 import { profiles } from './performance'
 
 const benchmark = import.meta.env.VITE_BENCHMARK === '1' && new URLSearchParams(location.search).has('benchmark')
@@ -12,7 +13,9 @@ export function App() {
   const canvas = useRef<HTMLCanvasElement>(null)
   const engine = useRef<Engine | null>(null)
   const [effect, setEffect] = useState(0)
+  const [amount, setAmount] = useState(.5)
   const [ready, setReady] = useState(false)
+  const [playable, setPlayable] = useState(false)
   const [clean, setClean] = useState(false)
   const [camera, setCamera] = useState<'demo' | 'starting' | 'live'>('demo')
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([])
@@ -34,16 +37,20 @@ export function App() {
     try {
       instance = new Engine(canvas.current!, setMessage)
       engine.current = instance
-      instance.onEffect = setEffect
+      instance.onEffect = id => {
+        setEffect(id)
+        setAmount(instance.effectAmount)
+      }
     } catch (error) {
       setMessage('WebGL 2 unavailable. ' + String(error))
       return
     }
+    void instance.playable.then(() => { if (active) setPlayable(true) }).catch(() => {})
     instance.ready.then(() => {
       if (!active) return
       if (benchmark) window.snapBenchmark = instance
       setReady(true)
-      setMessage('Demo ready')
+      setMessage(previous => previous.startsWith('Preparing') ? 'Demo ready' : previous)
     }).catch(error => { if (active) setMessage(String(error)) })
     const refresh = () => navigator.mediaDevices?.enumerateDevices()
       .then(list => { if (active) setDevices(list.filter(item => item.kind === 'videoinput' && !/OBS Virtual Camera/i.test(item.label))) })
@@ -127,12 +134,7 @@ export function App() {
         <button type="button" className="primary" disabled={!ready} onClick={() => setClean(true)}>Clean OBS output</button>
       </div>
     </header>}
-    {!clean && <aside className="catalog" aria-label="Effects">
-      <h1>Effects</h1>
-      {effects.map(item => <button type="button" key={item.id} disabled={!ready} aria-pressed={item.id === effect} onClick={() => {
-        if (engine.current?.select(item.id)) setEffect(item.id)
-      }}><span>{String(item.id).padStart(2, '0')}</span>{item.label}</button>)}
-    </aside>}
+    {!clean && <EffectCatalog selected={effect} disabled={!ready} choose={id => { engine.current?.select(id) }} />}
     <section className="output" aria-label="Processed video">
       <canvas ref={canvas} aria-label="Processed video canvas" />
     </section>
@@ -169,6 +171,10 @@ export function App() {
         setStrength(event.target.valueAsNumber)
         engine.current?.setStrength(event.target.valueAsNumber)
       }} /></label>
+      {effect !== 0 && <label>{effects[effect].control}<input type="range" min="0" max="1" step=".01" value={amount} onChange={event => {
+        setAmount(event.target.valueAsNumber)
+        engine.current?.setAmount(event.target.valueAsNumber)
+      }} /></label>}
       {diagnostics && <div className="stats">
         <h2>Diagnostics</h2>
         <p>Render {stats?.renderFps?.toFixed(1) ?? '—'} FPS</p>
@@ -183,7 +189,7 @@ export function App() {
     </aside>}
     {!clean && <footer>
       <div className="transport">
-        <button type="button" className="primary" disabled={!ready || camera === 'starting'} onClick={() => {
+        <button type="button" className="primary" disabled={!playable || camera === 'starting'} onClick={() => {
           if (camera === 'live') {
             engine.current?.stopCamera()
             setCamera('demo')

@@ -21,10 +21,18 @@ test('effects are distinct and clean output keeps the same canvas and camera', a
     const engine = window.snapBenchmark!
     return effects.map(({ id }) => {
       engine.select(id)
-      return engine.sampleAt(4)
+      const originalAmount = engine.sampleAt(4)
+      engine.setAmount(.9)
+      const adjusted = engine.sampleAt(4)
+      engine.setAmount(.5)
+      return { id, originalAmount, adjusted }
     })
   })
-  expect(new Set(hashes).size).toBe(hashes.length)
+  expect(hashes).toHaveLength(21)
+  expect(new Set(hashes.map(item => item.originalAmount)).size).toBe(hashes.length)
+  expect(hashes.filter(item => item.originalAmount === item.adjusted).map(item => item.id)).toEqual([0])
+  await page.evaluate(() => { window.snapBenchmark!.select(10) })
+  await expect.poll(() => page.evaluate(() => window.snapBenchmark!.snapshot().historyFrames)).toBe(2)
   await page.getByRole('checkbox', { name: 'Hand tracking' }).uncheck()
   await page.getByRole('button', { name: 'Start camera' }).click()
   await expect(page.getByText('Physical camera active')).toBeVisible()
@@ -57,5 +65,5 @@ test('camera permission failure keeps effects available', async ({ page }) => {
   await page.getByRole('button', { name: 'Start camera' }).click()
   await expect(page.getByRole('status')).toContainText('Camera unavailable')
   await page.getByRole('button', { name: 'Next effect' }).click()
-  await expect(page.getByRole('button', { name: '02 Comic Book' })).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.getByRole('button', { name: '01 2D / 3D Style' })).toHaveAttribute('aria-pressed', 'true')
 })

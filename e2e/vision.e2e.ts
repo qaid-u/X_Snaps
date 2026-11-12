@@ -20,6 +20,6 @@ test('missing model falls back to manual switching while camera continues', asyn
   await expect(page.getByRole('status')).toContainText('Physical camera active')
   await expect.poll(() => page.evaluate(() => window.snapBenchmark!.snapshot().handStatus)).toContain('Hand tracking unavailable')
   await page.getByRole('button', { name: 'Next effect' }).click()
-  await expect(page.getByRole('button', { name: '02 Comic Book' })).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.getByRole('button', { name: '01 2D / 3D Style' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.getByRole('button', { name: 'Stop camera' })).toBeVisible()
 })

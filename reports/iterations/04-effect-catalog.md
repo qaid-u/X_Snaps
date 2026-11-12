@@ -1,0 +1,8 @@
+# 04 — Twenty GPU effects and Original
+
+2026-11-12, Windows, Chrome 157 and RTX 3060 Laptop GPU. Expanded the web shader and catalog to 21 selectable modes. Added per-effect adjustment, two reusable delayed-frame samples backed by three preallocated 320 × 180 targets, and progressive GPU preparation.
+
+- `npm run validate` passed strict typecheck, ESLint, 7 unit tests, production build, 4 Chrome tests, 1 Electron test and smoke. The native Python suite passed 51, with 2 environment skips. Chrome readback verified 21 distinct pixel hashes and adjustment changed each of the 20 effects. The echo filled its bounded history.
+- A cold full-catalog shader initially delayed the first draw by 3.19 s. The preview now draws first with its pass-through shader, then compiles and draws all effect branches offscreen before accepting effect switches. Measured first draw was 46.4 ms versus 120.4 ms for the six-mode MVP. Full catalog warm-up took 4.26 s on the final smoke run. A previous run had long carousel outliers. The warmed repeat measured 29.98 FPS, p95 37.4 ms, p99 40.3 ms and 1 long interval out of 121. An isolated initial Original trigger took 152.3 ms.
+- Across common effects, all p95 comparisons passed the 10% gate. Across the expanded catalog, p95 intervals were 36.4–37.4 ms, GPU p95 0.05–0.30 ms, and repeated trigger-to-draw p95 30.4 ms. The fixture held two shader programs and five textures through the carousel.
+- Saved the [full-catalog smoke baseline](../performance/baseline-smoke.json) and retained the [MVP baseline](../performance/baseline-mvp.json). The longer per-effect run is pending. Physical webcam, physical snaps, OBS and receiving apps remain **NOT VERIFIED**.

@@ -41,6 +41,11 @@ h1, h2 { font-size: .8rem; color: #a8b7b9; margin: 0 0 1rem; }
 .desktop-grid .controls { grid-column: 2; }
 .desktop-grid .catalog { grid-row: auto; }
 .desktop-grid .transport { margin-top: .75rem; }
+.controls .transport, .obs-guide .transport { flex-wrap: wrap; }
+.obs-guide { margin-top: 1rem; font-size: .8rem; }
+.obs-guide summary { cursor: pointer; color: #8cead9; }
+.obs-guide li { margin: .4rem 0; }
+.obs-guide input { color: inherit; background: #1a2024; border: 1px solid #30393e; border-radius: 6px; padding: .45rem; }
 @media (max-width: 900px) {
   .app { grid-template-columns: 170px minmax(0, 1fr); grid-template-rows: auto auto 1fr auto; }
   .catalog { grid-row: span 2; }

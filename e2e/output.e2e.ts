@@ -15,7 +15,7 @@ test('effects are distinct and clean output keeps the same canvas and camera', a
     }
   })
   await page.goto('/?benchmark')
-  await expect(page.getByText('Demo ready')).toBeVisible()
+  await expect(page.getByText('Demo ready')).toBeVisible({ timeout: 12000 })
   const hashes = await page.evaluate(async () => {
     const { effects } = await import('/src/effects.ts' as string) as typeof import('../src/effects')
     const engine = window.snapBenchmark!

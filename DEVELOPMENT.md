@@ -12,6 +12,10 @@ Electron passed the synthetic two-window camera and control lifecycle test. The 
 
 The full GPU catalog passed shader readback and the comparable frame-time gate. Pass-through video now draws before the full catalog warms, and the catalog uses bounded GPU history for temporal effects. See [catalog results](reports/iterations/04-effect-catalog.md).
 
+The pinned person segmenter and all four scopes passed synthetic-camera tests and the comparable smoke gate. Split style reuses a half-resolution background target. See [mask results](reports/iterations/05-person-masks.md).
+
+PNG and bounded recording passed browser capture tests, and Electron saved a PNG from its dedicated output canvas. See [capture results](reports/iterations/06-local-capture.md).
+
 ## 2026-11-11 — Windows discovery and Stage 2 checkpoint
 
 The workspace started without source files or Git metadata. The implementation plan was to establish the native DEMO → five effects → transition → Perform Mode path first, preserve that project, then add the tracker, catalog, performance controls and verification.

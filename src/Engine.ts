@@ -1,10 +1,13 @@
 import {
-  Camera as ClipCamera, CanvasTexture, DataTexture, Mesh, PlaneGeometry, Scene, ShaderMaterial,
+  Camera as ClipCamera, CanvasTexture, DataTexture, LinearFilter, Mesh, PlaneGeometry, RedFormat, Scene, ShaderMaterial,
   Vector2, VideoTexture, WebGLRenderer, WebGLRenderTarget,
 } from 'three'
 import type { Texture } from 'three'
 import { Camera } from './Camera'
+import { Capture } from './Capture'
 import { HandTracking } from './HandTracking'
+import { VideoInference } from './VideoInference'
+import type { VisionResult } from './vision.protocol'
 import { effects, fragment, previewFragment, vertex } from './effects'
 import { PerformanceGovernor, PerformanceMonitor, profiles } from './performance'
 
@@ -61,11 +64,15 @@ function makeTitle() {
 }
 
 export class Engine {
+  readonly capture: Capture
   readonly camera = new Camera()
   readonly metrics = new PerformanceMonitor()
   readonly governor = new PerformanceGovernor()
   readonly hands = new HandTracking(this.camera.video, () => profiles[this.governor.level].handHz,
     () => this.next(1, performance.now(), true), ms => this.metrics.hand.add(ms), () => this.metrics.skippedInference++)
+  private readonly maskWorker = new VideoInference<Extract<VisionResult, { type: 'mask' }>>('mask', this.camera.video,
+    () => [7, 10, 14][this.governor.level], () => this.governor.level ? 256 : 192,
+    mask => this.acceptMask(mask), () => this.metrics.skippedMasks++)
   trackingEnabled = true
   onEffect?: (id: number) => void
   private readonly renderer
@@ -74,13 +81,17 @@ export class Engine {
   private readonly scene = new Scene()
   private readonly videoTexture = new VideoTexture(this.camera.video)
   private readonly blank = new DataTexture()
+  private readonly mask = new DataTexture(new Uint8Array([0]), 1, 1, RedFormat)
   private readonly title = makeTitle()
   private readonly history = Array.from({ length: 3 }, () => new WebGLRenderTarget(320, 180, { depthBuffer: false }))
+  private readonly split = new WebGLRenderTarget(640, 360, { depthBuffer: false })
   private readonly amounts = new Map<number, number>()
   private readonly uniforms = {
     live: { value: this.blank as DataTexture | VideoTexture },
     titleMap: { value: this.title }, recentFrame: { value: this.blank as Texture },
     olderFrame: { value: this.blank as Texture }, historyCount: { value: 0 },
+    maskMap: { value: this.mask }, maskFresh: { value: false }, scope: { value: 0 },
+    splitBackdrop: { value: this.blank as Texture },
     demo: { value: true }, mirrored: { value: false }, fit: { value: new Vector2(1, 1) },
     size: { value: new Vector2(1280, 720) }, effect: { value: 0 }, time: { value: 0 },
     strength: { value: 1 }, amount: { value: .5 }, impact: { value: 0 }, detailLevel: { value: 1 },
@@ -96,6 +107,10 @@ export class Engine {
   private nextQualityCheck = 0
   private historyIndex = 0
   private historyAt = -Infinity
+  private maskAt = -Infinity
+  private backgroundEffect = 3
+  private newestVideoAt = -Infinity
+  private stalled = false
   private transitionAt = -Infinity
   private lastTriggerAt = -Infinity
   private frozen = false
@@ -111,6 +126,7 @@ export class Engine {
   transition = true
 
   constructor(readonly canvas: HTMLCanvasElement, private readonly status: (status: string) => void) {
+    this.capture = new Capture(canvas, status)
     this.renderer = new WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'high-performance' })
     this.renderer.debug.onShaderError = (gl, program, vert, frag) => {
       this.shaderError = [gl.getProgramInfoLog(program), gl.getShaderInfoLog(vert), gl.getShaderInfoLog(frag)].filter(Boolean).join(' ')
@@ -118,6 +134,8 @@ export class Engine {
     }
     this.blank.image = { data: new Uint8Array([0, 0, 0, 255]), width: 1, height: 1 }
     this.blank.needsUpdate = true
+    this.mask.minFilter = this.mask.magFilter = LinearFilter
+    this.mask.needsUpdate = true
     this.timer = this.makeTimer()
     this.scene.add(this.mesh)
     this.applyProfile()
@@ -140,6 +158,7 @@ export class Engine {
       await this.renderer.compileAsync(warming, this.clip)
       if (this.disposed) return
       for (const target of this.history) this.renderer.initRenderTarget(target)
+      this.renderer.initRenderTarget(this.split)
       this.renderer.setRenderTarget(this.history[0])
       const historyShader = this.renderer.compileAsync(warming, this.clip)
       this.renderer.setRenderTarget(null)
@@ -210,6 +229,7 @@ export class Engine {
     this.metrics.triggered(at)
     this.uniforms.effect.value = id
     this.uniforms.amount.value = this.amounts.get(id) ?? .5
+    this.updateMaskWorker()
     this.onEffect?.(id)
     return true
   }
@@ -223,11 +243,47 @@ export class Engine {
 
   setMirror(value: boolean) { this.uniforms.mirrored.value = value }
   setStrength(value: number) { this.uniforms.strength.value = value }
+  record() {
+    if (this.capture.state === 'idle') this.capture.start(profiles[this.governor.level].fps)
+    else this.capture.stop()
+  }
   setAmount(value: number) {
     if (!Number.isFinite(value)) return
     const clamped = Math.max(0, Math.min(1, value))
     this.amounts.set(this.effect, clamped)
     this.uniforms.amount.value = clamped
+  }
+  setScope(scope: number) {
+    this.uniforms.scope.value = scope
+    this.updateMaskWorker()
+  }
+  setBackgroundEffect(id: number) { this.backgroundEffect = id }
+
+  private updateMaskWorker() {
+    if (this.cameraLive && (this.uniforms.scope.value !== 0 || this.effect === 20)) {
+      if (this.maskWorker.status === 'Off') this.maskWorker.start()
+    }
+    else this.stopMask()
+  }
+
+  private stopMask() {
+    this.maskWorker.stop()
+    this.maskAt = -Infinity
+    this.uniforms.maskFresh.value = false
+  }
+
+  private acceptMask(mask: Extract<VisionResult, { type: 'mask' }>) {
+    this.metrics.segmentation.add(mask.inferenceMs)
+    const image = this.mask.image
+    if (image.width === mask.width && image.height === mask.height && this.maskAt !== -Infinity) {
+      const previous = image.data as Uint8Array
+      for (let i = 0; i < mask.pixels.length; i++) mask.pixels[i] = (mask.pixels[i] * 3 + previous[i]) >> 2
+    } else if (image.width !== mask.width || image.height !== mask.height) {
+      this.mask.dispose()
+    }
+    this.mask.image = { data: mask.pixels, width: mask.width, height: mask.height }
+    this.mask.needsUpdate = true
+    this.maskAt = mask.at
   }
   setProfile(value: number, locked: boolean) {
     this.governor.select(value, locked)
@@ -238,17 +294,24 @@ export class Engine {
     this.cameraLive = false
     this.clearHistory()
     this.hands.stop()
+    this.stopMask()
     const started = await this.camera.start(device, profiles[this.governor.ceiling].fps, now => {
+      this.newestVideoAt = now
       this.metrics.decoded(now)
       this.hands.frame(now)
+      this.maskWorker.frame(now)
     }, () => {
       this.cameraLive = false
       this.clearHistory()
       this.hands.stop()
+      this.stopMask()
       this.status('Camera disconnected. Demo is active.')
     })
     this.cameraLive = started
+    this.newestVideoAt = performance.now()
+    this.stalled = false
     if (started && this.trackingEnabled) this.hands.start()
+    this.updateMaskWorker()
     return started
   }
 
@@ -262,6 +325,7 @@ export class Engine {
     this.cameraLive = false
     this.clearHistory()
     this.hands.stop()
+    this.stopMask()
     this.camera.stop()
   }
 
@@ -277,8 +341,18 @@ export class Engine {
       profile: profiles[this.governor.level].name,
       reason: this.governor.reason,
       handStatus: this.hands.status,
+      scope: this.uniforms.scope.value,
+      backgroundEffect: this.backgroundEffect,
+      maskFresh: this.uniforms.maskFresh.value,
+      maskStatus: this.maskWorker.status,
+      sourceWidth: this.camera.active ? this.camera.video.videoWidth : 0,
+      sourceHeight: this.camera.active ? this.camera.video.videoHeight : 0,
       effectAmount: this.effectAmount,
       historyFrames: this.uniforms.historyCount.value,
+      recording: this.capture.state,
+      mirror: this.uniforms.mirrored.value, cover: this.cover, trackingEnabled: this.trackingEnabled,
+      sensitivity: this.hands.sensitivity, selectedProfile: this.governor.ceiling, locked: this.governor.locked,
+      strength: this.uniforms.strength.value, transition: this.transition,
     }
   }
 
@@ -286,7 +360,7 @@ export class Engine {
   sampleAt(time: number) {
     this.uniforms.time.value = time
     this.uniforms.impact.value = 0
-    this.renderer.render(this.scene, this.clip)
+    this.renderCurrent()
     const gl = this.renderer.getContext()
     const pixels = new Uint8Array(this.canvas.width * this.canvas.height * 4)
     gl.readPixels(0, 0, this.canvas.width, this.canvas.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels)
@@ -303,7 +377,8 @@ export class Engine {
   }
 
   private updateHistory(now: number) {
-    const active = this.effect === 10 || this.effect === 15
+    const temporal = (id: number) => id === 10 || id === 15
+    const active = temporal(this.effect) || (this.uniforms.scope.value === 3 && temporal(this.backgroundEffect))
     if (!active || now - this.historyAt < (this.governor.level === 0 ? 150 : 100)) return
     if (now - this.historyAt > 450) this.clearHistory()
     const effect = this.effect
@@ -326,15 +401,49 @@ export class Engine {
     this.historyAt = now
   }
 
+  private renderCurrent() {
+    const u = this.uniforms
+    if (this.warmupMs && this.effect !== 0 && u.scope.value === 3 && (u.demo.value || u.maskFresh.value)) {
+      const prior = { effect: this.effect, strength: u.strength.value, impact: u.impact.value, amount: this.effectAmount }
+      try {
+        u.splitBackdrop.value = this.blank
+        u.effect.value = this.backgroundEffect
+        u.scope.value = 0
+        u.strength.value = 1
+        u.impact.value = 0
+        u.amount.value = this.amounts.get(this.backgroundEffect) ?? .5
+        this.renderer.setRenderTarget(this.split)
+        this.renderer.render(this.scene, this.clip)
+      } finally {
+        this.renderer.setRenderTarget(null)
+        u.effect.value = prior.effect
+        u.scope.value = 3
+        u.strength.value = prior.strength
+        u.impact.value = prior.impact
+        u.amount.value = prior.amount
+      }
+      u.splitBackdrop.value = this.split.texture
+    }
+    this.renderer.render(this.scene, this.clip)
+  }
+
   private frame = (now: number) => {
     this.handle = requestAnimationFrame(this.frame)
     if (this.lost || this.frozen) return
     const { fps } = profiles[this.governor.level]
     if (now + .5 < this.due) return
-    this.due = Math.max(this.due + 1000 / fps, now + .5)
+    const interval = 1000 / fps
+    this.due = this.due ? Math.max(this.due + interval, now + interval * .75) : now + interval
     const began = performance.now()
-    const live = this.cameraLive && this.camera.active
+    const input = this.cameraLive && this.camera.active
+    const live = input && now - this.newestVideoAt < 1500
+    if (input && this.stalled !== !live) {
+      this.stalled = !live
+      this.clearHistory()
+      this.status(live ? 'Physical camera active' : 'Camera stalled. Demo is active while waiting for frames.')
+    }
     this.uniforms.demo.value = !live
+    this.uniforms.maskFresh.value = live && now - this.maskAt < 500
     this.uniforms.live.value = live ? this.videoTexture : this.blank
     if (live) {
       const ratio = (this.canvas.width / this.canvas.height) / (this.camera.video.videoWidth / this.camera.video.videoHeight)
@@ -345,7 +454,8 @@ export class Engine {
     this.uniforms.impact.value = Math.max(0, 1 - (now - this.transitionAt) / 240)
     this.timer.begin()
     try {
-      this.renderer.render(this.scene, this.clip)
+      this.renderCurrent()
+      this.capture.drawn()
       this.updateHistory(now)
     } catch (error) {
       this.frozen = true
@@ -355,7 +465,7 @@ export class Engine {
       this.timer.end()
     }
     this.metrics.drawn(performance.now(), performance.now() - began)
-    if (now >= this.nextQualityCheck && this.metrics.render.summary().count >= fps * 2) {
+    if (now >= this.nextQualityCheck && this.metrics.render.count >= fps * 2) {
       this.nextQualityCheck = now + 1000
       if (this.governor.observe(this.metrics.render.slowRatio(1500 / fps), this.metrics.gpu.summary().p95)) this.applyProfile()
     }
@@ -364,6 +474,7 @@ export class Engine {
   dispose() {
     this.disposed = true
     this.stopCamera()
+    this.capture.dispose()
     cancelAnimationFrame(this.handle)
     this.canvas.removeEventListener('webglcontextlost', this.onContextLost)
     this.canvas.removeEventListener('webglcontextrestored', this.onContextRestored)
@@ -371,6 +482,8 @@ export class Engine {
     this.videoTexture.dispose()
     this.blank.dispose()
     this.title.dispose()
+    this.mask.dispose()
+    this.split.dispose()
     for (const target of this.history) target.dispose()
     this.geometry.dispose()
     this.material.dispose()

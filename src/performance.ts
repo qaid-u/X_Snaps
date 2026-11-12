@@ -16,6 +16,8 @@ export class Samples {
 
   constructor(private readonly limit = 240) {}
 
+  get count() { return this.values.length }
+
   add(value: number) {
     this.values[this.cursor] = value
     this.cursor = (this.cursor + 1) % this.limit
@@ -47,16 +49,19 @@ export class PerformanceMonitor {
   readonly cpu = new Samples()
   readonly gpu = new Samples()
   readonly hand = new Samples()
+  readonly segmentation = new Samples()
   readonly latency = new Samples()
   skippedInference = 0
+  skippedMasks = 0
   private lastRender: number | null = null
   private lastSource: number | null = null
   private triggerAt: number | null = null
 
   reset() {
-    for (const sample of [this.render, this.source, this.cpu, this.gpu, this.hand, this.latency]) sample.clear()
+    for (const sample of [this.render, this.source, this.cpu, this.gpu, this.hand, this.segmentation, this.latency]) sample.clear()
     this.lastRender = this.lastSource = this.triggerAt = null
     this.skippedInference = 0
+    this.skippedMasks = 0
   }
 
   decoded(now: number) {
@@ -84,7 +89,8 @@ export class PerformanceMonitor {
       sourceFps: source.mean ? 1000 / source.mean : null,
       longFrameRatio: this.render.slowRatio(1500 / fps),
       cpu: this.cpu.summary(), gpu: this.gpu.summary(), hand: this.hand.summary(),
-      latency: this.latency.summary(), skippedInference: this.skippedInference,
+      segmentation: this.segmentation.summary(), latency: this.latency.summary(),
+      skippedInference: this.skippedInference, skippedMasks: this.skippedMasks,
     }
   }
 }

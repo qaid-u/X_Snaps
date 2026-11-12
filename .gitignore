@@ -14,6 +14,7 @@ __pycache__/
 /test-results/
 /playwright-report/
 /public/models/*.task
+/public/models/*.tflite
 /public/vision/
 /reports/performance/run-*
 /release/

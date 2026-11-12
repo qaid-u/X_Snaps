@@ -4,6 +4,8 @@ The browser app uses [React and React DOM (MIT)](https://github.com/facebook/rea
 
 The local web vision worker uses [MediaPipe Tasks Vision (Apache-2.0)](https://github.com/google-ai-edge/mediapipe/blob/master/LICENSE). `npm run setup:models` fetches Google's Hand Landmarker float16 version 1 asset and verifies its SHA-256. The model is excluded from source control and subject to its upstream terms.
 
+The same setup downloads and verifies Google's landscape Selfie Segmentation float16 version 1 model, licensed under Apache-2.0. [Selfie Segmentation model card](https://storage.googleapis.com/mediapipe-assets/Model%20Card%20MediaPipe%20Selfie%20Segmentation.pdf)
+
 [OBS Studio](https://github.com/obsproject/obs-studio/blob/master/COPYING) is installed separately by the operator and supplies the virtual camera device.
 
 The Windows package includes [Electron (MIT)](https://github.com/electron/electron/blob/main/LICENSE). Keep the Electron license and Chromium notices distributed alongside the executable.

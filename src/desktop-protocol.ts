@@ -2,8 +2,8 @@ import type { Engine } from './Engine'
 
 export type Command =
   | { action: 'start'; device: string }
-  | { action: 'stop' | 'next' | 'previous' }
-  | { action: 'effect' | 'strength' | 'amount' | 'sensitivity'; value: number }
+  | { action: 'stop' | 'next' | 'previous' | 'still' | 'record' | 'pause' }
+  | { action: 'effect' | 'strength' | 'amount' | 'sensitivity' | 'scope' | 'background'; value: number }
   | { action: 'mirror' | 'cover' | 'tracking' | 'transition'; value: boolean }
   | { action: 'profile'; level: number; locked: boolean }
 
@@ -30,6 +30,7 @@ type ControlBridge = {
   read(): Promise<DesktopState | null>
   onState(callback: (state: DesktopState) => void): () => void
   showOutput(): Promise<void>
+  copyTitle(): Promise<void>
 }
 
 declare global {

@@ -17,6 +17,7 @@ await cp('dist', app + '/dist', { recursive: true })
 await cp('electron', app + '/electron', { recursive: true })
 await cp('LICENSE.md', app + '/LICENSE.md')
 await cp('LICENSE-THIRD-PARTY.md', app + '/LICENSE-THIRD-PARTY.md')
+await cp('docs/licenses/MediaPipe-Apache-2.0.txt', app + '/MediaPipe-Apache-2.0.txt')
 for (const path of ['react/LICENSE', 'react-dom/LICENSE', 'three/LICENSE']) {
   await cp('node_modules/' + path, app + '/' + path.replace('/', '-'))
 }

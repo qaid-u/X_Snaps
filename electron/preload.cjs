@@ -20,5 +20,6 @@ if (process.argv.includes('--snap-output')) {
     read: () => ipcRenderer.invoke('snap:read'),
     onState: callback => listen('snap:state', callback),
     showOutput: () => ipcRenderer.invoke('snap:show'),
+    copyTitle: () => ipcRenderer.invoke('snap:copy-title'),
   })
 }

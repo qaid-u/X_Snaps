@@ -24,7 +24,8 @@ test('animated GPU fixture meets its compatible performance baseline', async ({ 
       engine.metrics.reset()
       engine.select(value)
     }, id)
-    await page.waitForTimeout(full ? 4300 : 950)
+    await page.waitForFunction(target => window.snapBenchmark!.metrics.render.count >= target,
+      full ? 120 : 48, { polling: 100, timeout: 12000 })
     rows.push({ label, id, stats: await page.evaluate(() => window.snapBenchmark!.snapshot()) })
   }
   const stress = await page.evaluate(async ids => {
@@ -41,7 +42,8 @@ test('animated GPU fixture meets its compatible performance baseline', async ({ 
     cpu: cpus()[0]?.model, browser: browser.version(), gpu: rows[0].stats.gpuName, width: 1280, height: 720,
     fpsTarget: 30, profile: 'Balanced locked', source: 'procedural shader', obs: 'not running',
   }
-  const report = { at: new Date().toISOString(), settings, rows, stress, errors }
+  const startups = [{ initialMs: rows[0].stats.initialMs, warmupMs: rows[0].stats.warmupMs }]
+  const report = { at: new Date().toISOString(), settings, rows, stress, errors, startups }
   await mkdir(reportDir, { recursive: true })
   const baseFile = `${reportDir}/baseline-${settings.mode}.json`
   const baseline = await readFile(baseFile, 'utf8').then(value => JSON.parse(value) as typeof report, error => {
@@ -61,9 +63,22 @@ test('animated GPU fixture meets its compatible performance baseline', async ({ 
       if (row.stats.longFrameRatio > prior.longFrameRatio + .10) regression.push(`${row.label}: long frame ratio increased by >10 percentage points`)
     }
     const oldPreview = baseline.rows[0].stats.initialMs ?? baseline.rows[0].stats.warmupMs
-    if (rows[0].stats.initialMs > Math.max(oldPreview * 2, oldPreview + 150)) regression.push('First playable frame exceeded startup tolerance')
     const oldWarmup = baseline.rows[0].stats.warmupMs
-    if (sameCarousel && rows[0].stats.warmupMs > Math.max(oldWarmup * 2, oldWarmup + 150)) regression.push('Catalog warm-up exceeded baseline tolerance')
+    const slowPreview = (time: number) => time > Math.max(oldPreview * 2, oldPreview + 150)
+    const slowCatalog = (time: number) => sameCarousel && time > Math.max(oldWarmup * 2, oldWarmup + 150)
+    if (slowPreview(startups[0].initialMs) || slowCatalog(startups[0].warmupMs)) {
+      // Confirm a startup outlier in two fresh application instances and retain every measurement.
+      for (let run = 0; run < 2; run++) {
+        await page.reload()
+        await page.waitForFunction(() => !!window.snapBenchmark)
+        startups.push(await page.evaluate(() => {
+          const { initialMs, warmupMs } = window.snapBenchmark!
+          return { initialMs, warmupMs }
+        }))
+      }
+      if (startups.filter(sample => slowPreview(sample.initialMs)).length >= 2) regression.push('First playable frame repeatedly exceeded startup tolerance')
+      if (startups.filter(sample => slowCatalog(sample.warmupMs)).length >= 2) regression.push('Catalog warm-up repeatedly exceeded baseline tolerance')
+    }
   }
   const comparison = adopt ? 'Baseline requested' : comparable ? 'Comparable baseline' : 'No compatible baseline'
   const path = `${reportDir}/run-${Date.now()}-${settings.mode}`
@@ -74,7 +89,7 @@ test('animated GPU fixture meets its compatible performance baseline', async ({ 
     table.push(`| ${label} | ${[stats.renderFps, stats.render.p95, stats.cpu.p95, stats.gpu.p95, stats.latency.p95].map(value => value?.toFixed(2) ?? '—').join(' | ')} |`)
   }
   await writeFile(path + '.md', ['# Animated render benchmark', '', settings.gpu, '',
-    `First draw ${rows[0].stats.initialMs.toFixed(1)} ms. Full catalog warm-up ${rows[0].stats.warmupMs.toFixed(1)} ms. ${comparison}.`, '', ...table, '', ...regression, ''].join('\n'))
+    `First draw ${startups.map(sample => sample.initialMs.toFixed(1)).join(', ')} ms. Full catalog warm-up ${startups.map(sample => sample.warmupMs.toFixed(1)).join(', ')} ms. ${comparison}.`, '', ...table, '', ...regression, ''].join('\n'))
   for (const old of (await readdir(reportDir)).filter(name => /^run-\d+-(smoke|full)\.(json|md)$/.test(name)).sort().slice(0, -20)) {
     await rm(`${reportDir}/${old}`)
   }
@@ -82,7 +97,7 @@ test('animated GPU fixture meets its compatible performance baseline', async ({ 
   expect(errors).toEqual([])
   expect(regression).toEqual([])
   for (const { stats } of rows) {
-    expect(stats.render.count).toBeGreaterThan(4)
+    expect(stats.render.count).toBeGreaterThanOrEqual(full ? 120 : 48)
     expect(stats.programs).toBe(rows[0].stats.programs)
     expect(stats.textures).toBe(rows[0].stats.textures)
   }

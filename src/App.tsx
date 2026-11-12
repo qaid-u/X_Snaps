@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { Engine, outputTitle } from './Engine'
 import { effects } from './effects'
 import { EffectCatalog } from './EffectCatalog'
+import { ScopeControls } from './ScopeControls'
+import { CaptureControls, OBSGuide } from './CaptureControls'
 import { profiles } from './performance'
 
 const benchmark = import.meta.env.VITE_BENCHMARK === '1' && new URLSearchParams(location.search).has('benchmark')
@@ -30,6 +32,8 @@ export function App() {
   const [strength, setStrength] = useState(1)
   const [tracking, setTracking] = useState(true)
   const [sensitivity, setSensitivity] = useState(.5)
+  const [scope, setScope] = useState(0)
+  const [background, setBackground] = useState(3)
 
   useEffect(() => {
     let active = true
@@ -111,7 +115,7 @@ export function App() {
       const started = await instance.startCamera(device)
       setCamera(started ? 'live' : 'demo')
       setMessage(started ? 'Physical camera active' : 'Demo ready')
-      const list = await navigator.mediaDevices.enumerateDevices()
+      const list = await navigator.mediaDevices.enumerateDevices().catch(() => [])
       setDevices(list.filter(item => item.kind === 'videoinput' && !/OBS Virtual Camera/i.test(item.label)))
     } catch (error) {
       setCamera('demo')
@@ -163,6 +167,10 @@ export function App() {
       }} /></label>
       <p className="stats">{stats?.handStatus ?? 'Hand tracking off'}</p>
       <h2>Processing</h2>
+      <ScopeControls scope={scope} background={background} status={camera === 'demo' ? 'Demo mask' :
+        stats?.maskFresh ? 'Person mask active' : 'Whole scene while mask unavailable. ' + (stats?.maskStatus ?? '')}
+        onScope={value => { setScope(value); engine.current?.setScope(value) }}
+        onBackground={value => { setBackground(value); engine.current?.setBackgroundEffect(value) }} />
       <label>Quality<select value={profile} onChange={event => changeProfile(Number(event.target.value), locked)}>
         {profiles.map((item, index) => <option key={item.name} value={index}>{item.name}</option>)}
       </select></label>
@@ -175,13 +183,24 @@ export function App() {
         setAmount(event.target.valueAsNumber)
         engine.current?.setAmount(event.target.valueAsNumber)
       }} /></label>}
+      <CaptureControls state={stats?.recording ?? 'idle'} disabled={!ready} still={() => engine.current?.capture.requestStill()}
+        record={() => engine.current?.record()} pause={() => engine.current?.capture.pause()} />
+      <OBSGuide camera={camera === 'live' ? 'Physical webcam' : 'Generated DEMO'} show={() => { if (ready) setClean(true) }}
+        copy={() => navigator.clipboard.writeText(outputTitle)} testPattern={() => {
+          if (!ready || camera === 'starting') return
+          engine.current?.stopCamera()
+          setCamera('demo')
+          setMessage('Camera stopped. Demo is active.')
+          setClean(true)
+        }} />
       {diagnostics && <div className="stats">
         <h2>Diagnostics</h2>
         <p>Render {stats?.renderFps?.toFixed(1) ?? '—'} FPS</p>
-        <p>Source {stats?.sourceFps?.toFixed(1) ?? '—'} FPS</p>
+        <p>Source {stats?.sourceWidth || '—'} × {stats?.sourceHeight || '—'} · {stats?.sourceFps?.toFixed(1) ?? '—'} FPS</p>
         <p>Frame interval p95 {stats?.render.p95?.toFixed(1) ?? '—'} ms</p>
         <p>GPU p95 {stats?.gpu.p95?.toFixed(1) ?? '—'} ms</p>
         <p>Hand inference p95 {stats?.hand.p95?.toFixed(1) ?? '—'} ms · skipped {stats?.skippedInference ?? 0}</p>
+        <p>Mask inference p95 {stats?.segmentation.p95?.toFixed(1) ?? '—'} ms</p>
         <p>Trigger to draw p95 {stats?.latency.p95?.toFixed(1) ?? '—'} ms</p>
         <p>{stats?.width} × {stats?.height} · {stats?.profile}</p>
         <p>{stats?.reason}</p>

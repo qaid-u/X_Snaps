@@ -1,17 +1,23 @@
 import { _electron as electron, expect, test } from '@playwright/test'
 import { existsSync } from 'node:fs'
+import { mkdir, readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { createRequire } from 'node:module'
 
 const require = createRequire(import.meta.url)
 
-test('native output owns camera and renderer while controls can close and reopen', async () => {
+test('native output owns camera and renderer while controls can close and reopen', async ({}, info) => {
   const packaged = process.env.SNAP_PACKAGED_EXE
   const fakeMedia = ['--use-fake-device-for-media-stream', '--enable-unsafe-swiftshader']
   const app = await electron.launch(packaged
     ? { executablePath: resolve(packaged), args: fakeMedia }
     : { executablePath: require('electron') as string, args: [resolve('.'), ...fakeMedia] })
   try {
+    const downloads = info.outputPath('downloads')
+    await mkdir(downloads, { recursive: true })
+    await app.evaluate(({ session }, folder) => {
+      session.defaultSession.on('will-download', (_event, item) => item.setSavePath(folder + '/' + item.getFilename()))
+    }, downloads)
     await expect.poll(() => app.windows().length).toBe(2)
     const pages = app.windows()
     const windows = await Promise.all(pages.map(async page => {
@@ -20,7 +26,7 @@ test('native output owns camera and renderer while controls can close and reopen
     }))
     const outputPage = windows.find(item => item.role === 'output')!.page
     const control = windows.find(item => item.role === 'control')!.page
-    await expect(control.getByRole('status')).toHaveText('Demo ready')
+    await expect(control.getByRole('status')).toHaveText('Demo ready', { timeout: 12000 })
     await expect(outputPage.locator('canvas')).toHaveCount(1)
     await expect(outputPage.getByRole('button')).toHaveCount(0)
     await expect(control.locator('canvas')).toHaveCount(0)
@@ -46,6 +52,11 @@ test('native output owns camera and renderer while controls can close and reopen
     const newControl = await reopened
     await expect(newControl.getByRole('status')).toHaveText('Physical camera active')
     await expect(newControl.getByRole('button', { name: 'Stop camera' })).toBeVisible()
+    await newControl.getByRole('button', { name: 'Save PNG' }).click()
+    await expect(newControl.getByRole('status')).toHaveText('PNG ready to save.')
+    await expect.poll(async () => (await readdir(downloads)).filter(name => name.endsWith('.png')).length).toBe(1)
+    const filename = (await readdir(downloads)).find(name => name.endsWith('.png'))!
+    await expect.poll(async () => (await readFile(resolve(downloads, filename))).subarray(0, 8).toString('hex')).toBe('89504e470d0a1a0a')
     await newControl.getByRole('button', { name: 'Stop camera' }).click()
     await expect(newControl.getByRole('status')).toContainText('Camera stopped')
   } finally {

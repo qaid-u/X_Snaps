@@ -1,7 +1,11 @@
 import type { Hand } from './snap'
 
-export type VisionRequest = { type: 'init'; assets: string; model: string } |
+export type VisionKind = 'hand' | 'mask'
+export type VisionRequest = { type: 'init'; kind: VisionKind; assets: string; model: string } |
   { type: 'frame'; bitmap: ImageBitmap; at: number }
 
-export type VisionResponse = { type: 'ready' } | { type: 'error'; message: string } |
-  { type: 'result'; at: number; inferenceMs: number; hand: Hand | null }
+export type VisionResult =
+  | { type: 'hand'; at: number; inferenceMs: number; hand: Hand | null }
+  | { type: 'mask'; at: number; inferenceMs: number; width: number; height: number; pixels: Uint8Array<ArrayBuffer> }
+
+export type VisionResponse = { type: 'ready' } | { type: 'error'; message: string } | VisionResult

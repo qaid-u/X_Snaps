@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { Engine } from './Engine'
 import { effects } from './effects'
 import { EffectCatalog } from './EffectCatalog'
+import { ScopeControls } from './ScopeControls'
+import { CaptureControls, OBSGuide } from './CaptureControls'
 import { profiles } from './performance'
 import type { Command, DesktopState } from './desktop-protocol'
 
@@ -80,6 +82,11 @@ export function DesktopOutput() {
         case 'tracking': instance.setTracking(command.value); break
         case 'strength': instance.setStrength(command.value); break
         case 'amount': instance.setAmount(command.value); break
+        case 'scope': instance.setScope(command.value); break
+        case 'background': instance.setBackgroundEffect(command.value); break
+        case 'still': instance.capture.requestStill(); break
+        case 'record': instance.record(); break
+        case 'pause': instance.capture.pause(); break
         case 'sensitivity': instance.hands.sensitivity = command.value; break
         case 'transition': instance.transition = command.value; break
         case 'profile': instance.setProfile(command.level, command.locked); break
@@ -121,8 +128,6 @@ export function DesktopOutput() {
 export function DesktopControl() {
   const [state, setState] = useState<DesktopState | null>(null)
   const [device, setDevice] = useState('')
-  const [profile, setProfile] = useState(1)
-  const [locked, setLocked] = useState(false)
   const bridge = window.snapDesktop?.role === 'control' ? window.snapDesktop : null
 
   useEffect(() => {
@@ -137,6 +142,8 @@ export function DesktopControl() {
   const live = state?.camera === 'live'
   const waiting = state?.camera === 'starting'
   const metrics = state?.metrics
+  const profile = metrics?.selectedProfile ?? 1
+  const locked = metrics?.locked ?? false
 
   return <main className="desktop-control">
     <header>
@@ -158,34 +165,41 @@ export function DesktopControl() {
         </select></label>
         <button type="button" className="primary" disabled={!state?.playable || waiting}
           onClick={() => run(live ? { action: 'stop' } : { action: 'start', device })}>{live ? 'Stop camera' : 'Start camera'}</button>
-        <label className="check"><input type="checkbox" onChange={event => run({ action: 'mirror', value: event.target.checked })} />Mirror output</label>
-        <label className="check"><input type="checkbox" onChange={event => run({ action: 'cover', value: event.target.checked })} />Fill frame</label>
+        <label className="check"><input type="checkbox" checked={metrics?.mirror ?? false} onChange={event => run({ action: 'mirror', value: event.target.checked })} />Mirror output</label>
+        <label className="check"><input type="checkbox" checked={metrics?.cover ?? false} onChange={event => run({ action: 'cover', value: event.target.checked })} />Fill frame</label>
         <h2>Finger snaps</h2>
-        <label className="check"><input type="checkbox" defaultChecked onChange={event => run({ action: 'tracking', value: event.target.checked })} />Hand tracking</label>
-        <label>Sensitivity<input type="range" min="0" max="1" step=".05" defaultValue=".5"
+        <label className="check"><input type="checkbox" checked={metrics?.trackingEnabled ?? true} onChange={event => run({ action: 'tracking', value: event.target.checked })} />Hand tracking</label>
+        <label>Sensitivity<input type="range" min="0" max="1" step=".05" defaultValue={metrics?.sensitivity ?? .5}
           onChange={event => run({ action: 'sensitivity', value: event.target.valueAsNumber })} /></label>
         <p className="stats">{metrics?.handStatus}</p>
         <h2>Processing</h2>
+        <ScopeControls scope={metrics?.scope ?? 0} background={metrics?.backgroundEffect ?? 3}
+          status={!live ? 'Demo mask' : metrics?.maskFresh ? 'Person mask active' : 'Whole scene while mask unavailable. ' + (metrics?.maskStatus ?? '')}
+          onScope={value => run({ action: 'scope', value })} onBackground={value => run({ action: 'background', value })} />
         <label>Quality<select value={profile} onChange={event => {
           const level = Number(event.target.value)
-          setProfile(level)
           run({ action: 'profile', level, locked })
         }}>{profiles.map((item, index) => <option key={item.name} value={index}>{item.name}</option>)}</select></label>
         <label className="check"><input type="checkbox" checked={locked} onChange={event => {
-          setLocked(event.target.checked)
           run({ action: 'profile', level: profile, locked: event.target.checked })
         }} />Lock quality</label>
-        <label>Effect strength<input type="range" min="0" max="1" step=".01" defaultValue="1"
+        <label>Effect strength<input type="range" min="0" max="1" step=".01" defaultValue={metrics?.strength ?? 1}
           onChange={event => run({ action: 'strength', value: event.target.valueAsNumber })} /></label>
         {!!metrics?.effect && <label>{effects[metrics.effect].control}<input type="range" key={metrics.effect}
           min="0" max="1" step=".01" defaultValue={metrics.effectAmount}
           onChange={event => run({ action: 'amount', value: event.target.valueAsNumber })} /></label>}
-        <label className="check"><input type="checkbox" defaultChecked onChange={event => run({ action: 'transition', value: event.target.checked })} />Transition</label>
+        <label className="check"><input type="checkbox" checked={metrics?.transition ?? true} onChange={event => run({ action: 'transition', value: event.target.checked })} />Transition</label>
+        <CaptureControls state={metrics?.recording ?? 'idle'} disabled={!usable} still={() => run({ action: 'still' })}
+          record={() => run({ action: 'record' })} pause={() => run({ action: 'pause' })} />
+        {bridge && <OBSGuide camera={live ? 'Physical webcam' : 'Generated DEMO'} show={() => { void bridge.showOutput() }}
+          copy={() => bridge.copyTitle()} testPattern={() => { run({ action: 'stop' }); void bridge.showOutput() }} />}
         <div className="stats">
           <p>{metrics?.width ?? '—'} × {metrics?.height ?? '—'} · {metrics?.profile} · {metrics?.reason}</p>
-          <p>Source {metrics?.sourceFps?.toFixed(1) ?? '—'} FPS · Render {metrics?.renderFps?.toFixed(1) ?? '—'} FPS</p>
+          <p>Source {metrics?.sourceWidth || '—'} × {metrics?.sourceHeight || '—'} · {metrics?.sourceFps?.toFixed(1) ?? '—'} FPS</p>
+          <p>Render {metrics?.renderFps?.toFixed(1) ?? '—'} FPS</p>
           <p>Frame p95 {metrics?.render.p95?.toFixed(1) ?? '—'} ms · GPU p95 {metrics?.gpu.p95?.toFixed(1) ?? '—'} ms</p>
           <p>Inference p95 {metrics?.hand.p95?.toFixed(1) ?? '—'} ms · Skipped {metrics?.skippedInference ?? 0}</p>
+          <p>Mask p95 {metrics?.segmentation.p95?.toFixed(1) ?? '—'} ms · Skipped {metrics?.skippedMasks ?? 0}</p>
           <p>Trigger to draw p95 {metrics?.latency.p95?.toFixed(1) ?? '—'} ms</p>
         </div>
       </aside>

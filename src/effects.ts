@@ -36,6 +36,10 @@ uniform sampler2D live;
 uniform sampler2D titleMap;
 uniform sampler2D recentFrame;
 uniform sampler2D olderFrame;
+uniform sampler2D maskMap;
+uniform sampler2D splitBackdrop;
+uniform bool maskFresh;
+uniform int scope;
 uniform bool demo;
 uniform bool mirrored;
 uniform float historyCount;
@@ -72,6 +76,16 @@ void main() { gl_FragColor = vec4(sampleSource(point), 1.); }
 `
 
 export const fragment = sourceShader + `
+float personAt(vec2 p) {
+  if (demo) {
+    vec2 local = (p - vec2(.5 + .12 * sin(time * .85),.54)) / vec2(.23,.35);
+    return 1. - smoothstep(.89,1.02,length(local));
+  }
+  vec2 q = (p - .5) * fit + .5;
+  if (mirrored) q.x = 1. - q.x;
+  if (any(lessThan(q,vec2(0.))) || any(greaterThan(q,vec2(1.)))) return 0.;
+  return smoothstep(.32,.68,texture2D(maskMap,vec2(q.x,1. - q.y)).r);
+}
 float edgeAt(vec2 p, float center, float pixels) {
   vec2 d = pixels / size;
   float x = abs(sourceLuma(sampleSource(p + vec2(d.x, 0.))) - center);
@@ -225,7 +239,7 @@ vec3 applyEffect(int mode, vec2 p, vec3 c, float param) {
   if (mode == 20) {
     vec3 ink = comicAt(p,c,y,2.);
     vec3 dots = mix(vec3(.08,.025,.18), c * .6 + vec3(.16,.43,.43), halftoneAt(p,y,6.));
-    float pane = smoothstep(-.06,.06,centered.x + centered.y * .46 - .12 * sin(time * .8));
+    float pane = maskFresh || demo ? personAt(p) : smoothstep(-.06,.06,centered.x + centered.y * .46);
     float text = titleAt(p,.64,.31,-.1);
     return mix(mix(dots, ink, mix(.1,.9,pane) * (.6 + .4 * param)), vec3(.96,.83,.36), text * .82);
   }
@@ -234,7 +248,14 @@ vec3 applyEffect(int mode, vec2 p, vec3 c, float param) {
 void main() {
   vec2 p = point;
   vec3 c = sampleSource(p);
-  c = mix(c, applyEffect(effect, p, c, amount), strength);
+  vec3 styled = applyEffect(effect,p,c,amount);
+  if (effect != 0 && scope != 0 && (demo || maskFresh)) {
+    float person = personAt(p);
+    if (scope == 1) styled = mix(c,styled,person);
+    else if (scope == 2) styled = mix(styled,c,person);
+    else styled = mix(texture2D(splitBackdrop,p).rgb,styled,person);
+  }
+  c = mix(c, styled, strength);
   float ring = 1. - smoothstep(.012,.045,abs(length((p - .5) * vec2(1.78,1.)) - .8 * (1. - impact)));
   c += vec3(.18,.34,.32) * ring * impact;
   gl_FragColor = vec4(clamp(c, 0., 1.), 1.);

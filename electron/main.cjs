@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, Menu, net, protocol, session } = require('electron')
+const { app, BrowserWindow, clipboard, ipcMain, Menu, net, protocol, session } = require('electron')
 const { resolve, dirname, sep } = require('node:path')
 const { pathToFileURL } = require('node:url')
 
@@ -67,8 +67,9 @@ function accepted(command) {
   if (!command || typeof command !== 'object') return false
   switch (command.action) {
     case 'start': return typeof command.device === 'string' && command.device.length <= 256
-    case 'stop': case 'next': case 'previous': return true
-    case 'effect': return Number.isInteger(command.value) && command.value >= 0 && command.value <= 20
+    case 'stop': case 'next': case 'previous': case 'still': case 'record': case 'pause': return true
+    case 'effect': case 'background': return Number.isInteger(command.value) && command.value >= 0 && command.value <= 20
+    case 'scope': return Number.isInteger(command.value) && command.value >= 0 && command.value <= 3
     case 'profile': return [0, 1, 2].includes(command.level) && typeof command.locked === 'boolean'
     case 'strength': case 'amount': case 'sensitivity': return Number.isFinite(command.value) && command.value >= 0 && command.value <= 1
     case 'mirror': case 'cover': case 'tracking': case 'transition': return typeof command.value === 'boolean'
@@ -113,6 +114,9 @@ app.whenReady().then(() => {
   ipcMain.handle('snap:controls', event => { if (from(event, output)) showControl() })
   ipcMain.handle('snap:show', event => {
     if (from(event, control) && output) { output.show(); output.focus() }
+  })
+  ipcMain.handle('snap:copy-title', event => {
+    if (from(event, control)) clipboard.writeText(outputTitle)
   })
   createWindows()
 })

@@ -53,6 +53,10 @@ npm run perf:benchmark
 
 Automated checks use installed Google Chrome and a synthetic camera. The performance scripts emit JSON and Markdown in `reports/performance/` and check compatible baselines. Source-frame cadence, render cadence, and trigger-to-draw latency are separate measurements. See the [test commands and benchmark method](docs/WEB_TESTING.md) and [iteration reports](ITERATION_REPORT.md).
 
+The [720p per-effect benchmark](reports/performance/final-benchmark.md) records the measured DEMO workload and is backed by the [machine-readable baseline](reports/performance/baseline-full.json).
+
 Physical webcam, real snap recognition, OBS Window Capture, OBS Virtual Camera, and video-call output are **NOT VERIFIED**. See [development results](DEVELOPMENT.md), [architecture](docs/WEB_ARCHITECTURE.md), [licensing](LICENSE.md) and [third-party notices](LICENSE-THIRD-PARTY.md).
+
+The Windows build uses guided manual calibration and the system microphone. Automatic threshold fitting, a live landmark overlay, and a hardware release soak are open.
 
 The existing [TouchDesigner project](TOUCHDESIGNER.md) and its saved DEMO checkpoint remain available in this repository.

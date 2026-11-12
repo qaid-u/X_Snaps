@@ -11,5 +11,6 @@
 | [06](reports/iterations/06-local-capture.md) | PNG and video capture, OBS setup controls |
 | [07](reports/iterations/07-audio-confirmation.md) | Opt-in microphone, audio confirmation and calibration controls |
 | [08](reports/iterations/08-transitions-and-rotation.md) | Ten transitions, editable rotation and saved numeric presets |
+| [09](reports/iterations/09-portable-verification.md) | Clean install, portable executable test and full per-effect benchmark |
 
 The [development log](DEVELOPMENT.md) includes native TouchDesigner results. Hardware acceptance for the Windows OBS app is tracked in [OBS setup](docs/OBS_SETUP.md).

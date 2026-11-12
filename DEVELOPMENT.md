@@ -20,6 +20,8 @@ Synthetic microphone opt-in and cleanup passed in Chrome and Electron. The audio
 
 The ten GPU transitions and local effect rotation passed browser pixel and persistence tests, the Electron integration test and the 720p smoke gate. See [transition and rotation results](reports/iterations/08-transitions-and-rotation.md).
 
+The final portable executable passed its synthetic camera and microphone test after a clean dependency install. The full 21-mode 720p benchmark recorded a 30.00 FPS median across mode averages and 30.7 ms p95 trigger-to-draw during the carousel. See [portable verification](reports/iterations/09-portable-verification.md) and [per-effect results](reports/performance/final-benchmark.md).
+
 ## 2026-11-11 — Windows discovery and Stage 2 checkpoint
 
 The workspace started without source files or Git metadata. The implementation plan was to establish the native DEMO → five effects → transition → Perform Mode path first, preserve that project, then add the tracker, catalog, performance controls and verification.

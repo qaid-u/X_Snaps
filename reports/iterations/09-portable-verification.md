@@ -1,0 +1,10 @@
+# 09 — Portable Windows build and full benchmark
+
+2026-11-12, Windows build 26300, Node 24.15.0, Electron 45.3.0, Chrome 157.0.8103.39 and NVIDIA GeForce RTX 3060 Laptop GPU through ANGLE Direct3D11.
+
+- Clean `npm ci`, pinned Electron installation, both model checksum checks and `npm run electron:build` passed. An earlier install attempt hit a DLL lock from a detached Playwright test process. Identified the workspace test processes, stopped them and reran the clean install.
+- Tested the exact new executable at `release/SNAP-REALITY-0.1.0-win-x64-1794444355159/SNAP-REALITY.exe`. `npm run test:desktop` passed with Chromium synthetic camera and microphone, local MediaPipe, output-only canvas, control close/reopen, IPC validation and PNG export. Verified that both models, the audio worklet and MediaPipe license are in the portable folder.
+- The final source passed `npm run validate` with 11 unit tests, 10 Chrome tests, one Electron test and the compatible smoke benchmark. Native Python passed 51 with two environment skips.
+- `npm run perf:benchmark` passed all 21 modes and 42 carousel selections at locked Balanced 1280 × 720. Per-mode median of rendered FPS was 30.00. Individual averages ranged from 26.49 to 30.04 FPS. Frame interval p95 ranged from 36.5 to 37.2 ms. Seven of 2,557 per-mode intervals exceeded 50 ms. The carousel averaged 29.99 FPS with p95 37.2 ms, zero sampled intervals above 50 ms, and 30.7 ms p95 from accepted trigger to draw. The renderer held two shader programs and seven textures. First draw took 44.6 ms and catalog preparation took 4.70 s.
+- Saved [per-effect results](../performance/final-benchmark.md) and the [full-run JSON baseline](../performance/baseline-full.json). This is the first longer baseline. The final comparable smoke gate passed against the earlier catalog baseline.
+- Physical webcam and microphone, physical snap accuracy, OBS Window Capture, Virtual Camera delivery, Discord/Zoom/Meet and hardware soak remain **NOT VERIFIED**. The benchmark used the procedural DEMO and measured renderer submission, with no OBS in the fixture. Follow the [Windows acceptance checklist](../../docs/OBS_SETUP.md).
